@@ -790,7 +790,7 @@
                 </div>
 
                 <div style="position:relative; width:100%; height:130px; border-radius:8px; overflow:hidden; margin:8px 0 10px 0; border:1px solid rgba(56,189,248,0.4); box-shadow:0 4px 16px rgba(0,0,0,0.6);">
-                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg" alt="Car Render" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
+                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/bmw_m3_gtr.jpg';" alt="Car Render" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
                     <div style="position:absolute; bottom:6px; left:8px; background:rgba(0,0,0,0.75); padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; color:#38bdf8; letter-spacing:1px;">8K GERÇEK ARAÇ GÖRÜNTÜSÜ</div>
                 </div>
 
@@ -823,11 +823,11 @@
                 </div>
                 <div style="display:flex; gap:8px;">
                     <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
-                        <img src="assets/images/police_interceptor.jpg" alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
+                        <img src="assets/images/police_interceptor.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_interceptor.jpg';" alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
                         <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#f8fafc;">INTERCEPTOR (EMP DART)</div>
                     </div>
                     <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
-                        <img src="assets/images/police_rhino.jpg" alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
+                        <img src="assets/images/police_rhino.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_rhino.jpg';" alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
                         <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#ef4444;">RHINO (KOR TERMİT)</div>
                     </div>
                 </div>
@@ -1051,6 +1051,19 @@
         const textureLoader = new THREE.TextureLoader();
         const gltfLoader = new THREE.GLTFLoader();
         const objLoader = new THREE.OBJLoader();
+
+        function loadTextureSafe(path, targetMat) {
+            const tex = textureLoader.load(path, undefined, undefined, () => {
+                if (!path.startsWith('nfs_hardcore_pursuit/')) {
+                    loadTextureSafe('nfs_hardcore_pursuit/' + path, targetMat);
+                }
+            });
+            if (targetMat) {
+                targetMat.map = tex;
+                targetMat.needsUpdate = true;
+            }
+            return tex;
+        }
 
         // Atmospheric Balanced Night Lighting
         const ambientLight = new THREE.AmbientLight(0x384a62, 1.55);
@@ -1749,18 +1762,21 @@
 
             const imgEl = document.getElementById('menu-car-img');
             if (imgEl && cfg.image) {
+                imgEl.onerror = function() {
+                    if (!this.src.includes('nfs_hardcore_pursuit/')) {
+                        this.src = 'nfs_hardcore_pursuit/' + cfg.image;
+                    }
+                };
                 imgEl.src = cfg.image;
             }
 
             if (typeof showroomBillboard !== 'undefined' && showroomBillboard.material) {
-                showroomBillboard.material.map = textureLoader.load(cfg.image);
-                showroomBillboard.material.needsUpdate = true;
+                loadTextureSafe(cfg.image, showroomBillboard.material);
             }
 
             if (typeof navScreen !== 'undefined' && navScreen.material) {
                 const screenImg = cfg.isPorsche ? 'assets/images/porsche_cockpit.jpg' : cfg.image;
-                navScreen.material.map = textureLoader.load(screenImg);
-                navScreen.material.needsUpdate = true;
+                loadTextureSafe(screenImg, navScreen.material);
             }
 
             playerGroup.remove(playerMeshGroup);
