@@ -1,0 +1,3121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Need For Speed: Hardcore Pursuit - Most Wanted Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            background-color: #040810;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Arial Black", sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+        #webgl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* --- NFS MAIN MENU SCREEN --- */
+        #main-menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            display: flex;
+            background: linear-gradient(90deg, rgba(3, 5, 8, 0.95) 0%, rgba(3, 5, 8, 0.75) 45%, rgba(3, 5, 8, 0.1) 100%);
+            pointer-events: auto;
+            transition: opacity 0.5s ease;
+        }
+        .menu-sidebar {
+            width: 500px;
+            height: 100%;
+            padding: 40px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 105;
+            overflow-y: auto;
+        }
+        .nfs-logo-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .nfs-sub {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #ef4444;
+            text-transform: uppercase;
+        }
+        .nfs-title {
+            font-size: 3.0rem;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 2px;
+            line-height: 0.95;
+            background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+        }
+        .nfs-edition {
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #38bdf8;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Menu Navigation Buttons */
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 18px 0;
+        }
+        .menu-btn {
+            background: rgba(15, 23, 42, 0.75);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 13px 20px;
+            font-size: 1.02rem;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 6px;
+            background: #ef4444;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+        .menu-btn:hover, .menu-btn.active {
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border-color: #ef4444;
+            transform: translateX(10px);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+        }
+        .menu-btn:hover::before, .menu-btn.active::before {
+            transform: scaleY(1);
+        }
+        .menu-btn.primary {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            border-color: #f87171;
+            color: #ffffff;
+            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.5);
+        }
+        .menu-btn.primary:hover {
+            transform: translateX(12px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.7);
+        }
+        .menu-btn.heat10 {
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+            border-color: #fca5a5;
+            color: #ffffff;
+            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.5);
+        }
+        .menu-btn.upload {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(15, 23, 42, 0.85) 100%);
+            border-color: #38bdf8;
+            color: #e0f2fe;
+        }
+
+        /* Car Specs Panel */
+        .car-info-card {
+            background: rgba(10, 15, 25, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 18px;
+            backdrop-filter: blur(12px);
+            margin-top: 4px;
+        }
+        .car-name-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .car-class-badge {
+            display: inline-block;
+            background: #ef4444;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-top: 3px;
+        }
+        .stat-bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+        .stat-track {
+            height: 6px;
+            background: #1e293b;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8 0%, #0284c7 100%);
+            border-radius: 3px;
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .car-nav-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .carousel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .carousel-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* --- 2. IN-GAME HUD SYSTEM --- */
+        #ingame-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 40;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Top Heat Bar */
+        #hud-top {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: rgba(10, 15, 25, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 24px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+        .heat-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.15rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ef4444;
+            letter-spacing: 2px;
+        }
+        .hud-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-val {
+            font-size: 0.95rem;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        /* Interactive Heat Level Selector Bar */
+        #heat-selector-bar {
+            position: absolute;
+            top: 68px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            pointer-events: auto;
+            background: rgba(3, 7, 18, 0.75);
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+        }
+        .heat-btn {
+            background: rgba(30, 41, 59, 0.85);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .heat-btn:hover {
+            background: #0284c7;
+            color: #fff;
+            border-color: #38bdf8;
+            transform: scale(1.05);
+        }
+        .heat-btn.active {
+            background: #ef4444;
+            color: #fff;
+            border-color: #f87171;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+        }
+        .heat-btn.max {
+            background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+            color: #fff;
+            font-weight: 900;
+        }
+
+        /* Radio Dispatch Banner */
+        #radio-dispatch {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid #ef4444;
+            padding: 9px 26px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #f8fafc;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
+            animation: pulse-border 1.5s infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { border-color: #ef4444; }
+            50% { border-color: #f87171; }
+        }
+
+        /* Tactical Threat Alert Overlay (EMP Lock & Thermite) */
+        #threat-alert-box {
+            position: absolute;
+            top: 155px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: rgba(185, 28, 28, 0.9);
+            border: 2px solid #ef4444;
+            padding: 8px 22px;
+            border-radius: 10px;
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.8);
+            animation: threat-pulse 0.4s infinite alternate;
+        }
+        @keyframes threat-pulse {
+            from { transform: translateX(-50%) scale(1.0); }
+            to { transform: translateX(-50%) scale(1.04); }
+        }
+        .threat-title {
+            font-size: 0.95rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .threat-meter-bg {
+            width: 220px;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .threat-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fbbf24 0%, #ef4444 100%);
+            transition: width 0.1s linear;
+        }
+
+        /* Left Controls & Info */
+        #hud-left {
+            position: absolute;
+            top: 80px;
+            left: 35px;
+            background: rgba(10, 15, 25, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            line-height: 1.7;
+            backdrop-filter: blur(8px);
+            pointer-events: auto;
+        }
+        .key-tag {
+            background: #1e293b;
+            color: #38bdf8;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid #334155;
+        }
+        .menu-return-btn {
+            margin-top: 12px;
+            width: 100%;
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .menu-return-btn:hover {
+            background: #ef4444;
+        }
+
+        /* Bottom Gauges: Speedometer, Tachometer & Nitro */
+        #hud-bottom {
+            position: absolute;
+            bottom: 30px;
+            right: 45px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .speedo-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .speed-val {
+            font-size: 5.5rem;
+            font-weight: 900;
+            font-style: italic;
+            line-height: 0.85;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+            letter-spacing: -2px;
+        }
+        .speed-unit {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #38bdf8;
+            font-style: italic;
+        }
+        .rpm-bar-bg {
+            width: 290px;
+            height: 10px;
+            background: #0f172a;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        .rpm-bar-fill {
+            height: 100%;
+            width: 15%;
+            background: linear-gradient(90deg, #38bdf8 0%, #eab308 70%, #ef4444 95%);
+            transition: width 0.05s ease-out;
+        }
+        .gear-nitro-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 290px;
+            justify-content: space-between;
+        }
+        .gear-badge {
+            background: #ef4444;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-style: italic;
+            padding: 2px 14px;
+            border-radius: 6px;
+            min-width: 44px;
+            text-align: center;
+        }
+        .gear-badge.reverse {
+            background: #f59e0b;
+            color: #000;
+            box-shadow: 0 0 15px #f59e0b;
+        }
+        .nitro-bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .nitro-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 1px;
+        }
+        .nitro-track {
+            height: 8px;
+            background: #0f172a;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .nitro-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+            box-shadow: 0 0 10px #38bdf8;
+            transition: width 0.1s ease;
+        }
+
+        /* Health & Armor Bar */
+        .health-bar-container {
+            width: 290px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 4px;
+        }
+        .health-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #10b981;
+            letter-spacing: 1px;
+        }
+        .health-bar-bg {
+            height: 8px;
+            background: #0f172a;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .health-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+            transition: width 0.15s ease;
+        }
+
+        /* EMP Glitch Overlay */
+        #emp-glitch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            display: none;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.3) 0%, rgba(10, 0, 50, 0.8) 100%);
+            mix-blend-mode: screen;
+            animation: emp-shake 0.05s infinite;
+        }
+        @keyframes emp-shake {
+            0% { transform: translate(3px, 1px); }
+            50% { transform: translate(-3px, -2px); }
+            100% { transform: translate(1px, 2px); }
+        }
+
+        /* Takedown Banner Overlay */
+        #takedown-overlay {
+            position: absolute;
+            top: 170px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 60;
+            display: none;
+            pointer-events: none;
+            text-align: center;
+        }
+        .takedown-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #fbbf24;
+            text-shadow: 0 0 35px #f59e0b, 0 4px 15px rgba(0,0,0,0.9);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: takedown-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .takedown-sub {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #10b981;
+            letter-spacing: 2px;
+        }
+        @keyframes takedown-pop {
+            0% { transform: scale(0.4); opacity: 0; }
+            80% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1.0); opacity: 1; }
+        }
+
+        /* Red Screen Damage Flash */
+        #damage-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 48;
+            pointer-events: none;
+            display: none;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(185, 28, 28, 0.8) 100%);
+        }
+
+        /* Green Repair Flash */
+        #repair-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 48;
+            pointer-events: none;
+            display: none;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.7) 100%);
+        }
+
+        /* Camera Mode Pill */
+        #cam-pill {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            background: rgba(10, 15, 25, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Busted / Game Over Overlay */
+        #busted-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 150;
+            background: radial-gradient(circle, rgba(20, 5, 5, 0.88) 0%, rgba(0, 0, 0, 0.97) 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            backdrop-filter: blur(12px);
+        }
+        .busted-main-title {
+            font-size: 5.5rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ef4444;
+            letter-spacing: 6px;
+            animation: busted-glow 0.8s infinite alternate;
+        }
+        @keyframes busted-glow {
+            from { text-shadow: 0 0 25px #ef4444, 0 4px 15px rgba(0,0,0,0.9); }
+            to { text-shadow: 0 0 60px #ff0000, 0 0 100px #ef4444, 0 4px 25px rgba(0,0,0,0.9); }
+        }
+
+        /* Drag & Drop Overlay Notification */
+        #drop-zone-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(14, 165, 233, 0.75);
+            border: 4px dashed #ffffff;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #fff;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+
+    <div id="emp-glitch"></div>
+    <div id="damage-flash"></div>
+    <div id="repair-flash"></div>
+    <div id="takedown-overlay">
+        <div class="takedown-title" id="takedown-text">💥 POLİS TAKEDOWN!</div>
+        <div class="takedown-sub" id="takedown-bounty">+5,000 BOUNTY</div>
+    </div>
+
+    <!-- === BUSTED / GAME OVER OVERLAY === -->
+    <div id="busted-overlay">
+        <div class="busted-main-title">🚨 BUSTED</div>
+        <div style="font-size:1.3rem; font-weight:800; color:#fca5a5; letter-spacing:3px; margin-top:-8px; text-transform:uppercase;">
+            ARACINIZ PERT OLDU // ETKİSİZ HALE GETİRİLDİNİZ
+        </div>
+
+        <div style="margin:28px 0; background:rgba(30,41,59,0.8); border:1px solid rgba(239,68,68,0.5); border-radius:12px; padding:20px 40px; display:flex; gap:36px; box-shadow:0 10px 30px rgba(0,0,0,0.7);">
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">TOPLAM BOUNTY</span>
+                <span style="font-size:2rem; color:#fbbf24; font-weight:900;" id="busted-bounty">0</span>
+            </div>
+            <div style="width:1px; background:rgba(255,255,255,0.15);"></div>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">YOK EDİLEN POLİS</span>
+                <span style="font-size:2rem; color:#38bdf8; font-weight:900;" id="busted-cops">0</span>
+            </div>
+            <div style="width:1px; background:rgba(255,255,255,0.15);"></div>
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">DAYANILAN SÜRE</span>
+                <span style="font-size:2rem; color:#10b981; font-weight:900;" id="busted-time">00:00</span>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+            <button class="menu-btn primary" onclick="retryPursuit()" style="padding:14px 34px; font-size:1.05rem; cursor:pointer;">
+                🔄 TEKRAR DENE (RETRY)
+            </button>
+            <button class="menu-btn" onclick="returnToMainMenu()" style="padding:14px 30px; font-size:1.05rem; background:#1e293b; color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px; cursor:pointer;">
+                🏠 GARAJA DÖN (GARAGE)
+            </button>
+        </div>
+    </div>
+
+    <div id="drop-zone-overlay">
+        <span>📁 3D ARABA MODELİNİ BIRAK (.GLB / .GLTF / .OBJ)</span>
+        <span style="font-size:1.1rem; margin-top:8px; opacity:0.9;">Otomatik olarak yüklenip oyuna eklenecektir!</span>
+    </div>
+
+    <!-- === 1. NFS CINEMATIC MAIN MENU === -->
+    <div id="main-menu-overlay">
+        <div class="menu-sidebar">
+            <div class="nfs-logo-wrap">
+                <div class="nfs-sub">EA BLACK BOX VIBE // HARDCORE PURSUIT</div>
+                <div class="nfs-title">NEED FOR SPEED</div>
+                <div class="nfs-edition">MOST WANTED // ULTIMATE PURSUIT</div>
+            </div>
+
+            <div class="menu-nav">
+                <button class="menu-btn primary" onclick="startGamePursuitWithHeat(1)">▶ TAKİBE BAŞLA (START PURSUIT)</button>
+                <button class="menu-btn heat10" onclick="startGamePursuitWithHeat(10)">🚨 SEVİYE 10 KAOS MODU (20 POLİS & SİLAHLAR)</button>
+                <button class="menu-btn upload" onclick="document.getElementById('custom-model-input').click()">
+                    📁 3D ARABA YÜKLE (.GLB / .OBJ)
+                </button>
+                <input type="file" id="custom-model-input" accept=".glb,.gltf,.obj" style="display:none" onchange="onCustomFileSelected(event)">
+                <div style="font-size:0.72rem; color:#94a3b8; margin-top:-4px; padding-left:4px;">
+                    💡 İpucu: Kendi 3D modelini doğrudan pencereye sürükleyip bırakabilirsin!
+                </div>
+            </div>
+
+            <!-- Car Selector & Specs with Real 3D Photo Preview -->
+            <div class="car-info-card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div class="car-name-title" id="menu-car-name">BMW M3 GTR</div>
+                        <div class="car-class-badge" id="menu-car-class">MOST WANTED LEGEND</div>
+                    </div>
+                    <div style="font-size:0.85rem; color:#38bdf8; font-weight:800;" id="menu-car-hp">585 HP</div>
+                </div>
+
+                <div style="position:relative; width:100%; height:130px; border-radius:8px; overflow:hidden; margin:8px 0 10px 0; border:1px solid rgba(56,189,248,0.4); box-shadow:0 4px 16px rgba(0,0,0,0.6);">
+                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg" alt="Car Render" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
+                    <div style="position:absolute; bottom:6px; left:8px; background:rgba(0,0,0,0.75); padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; color:#38bdf8; letter-spacing:1px;">8K GERÇEK ARAÇ GÖRÜNTÜSÜ</div>
+                </div>
+
+                <div class="stat-bar-group">
+                    <div class="stat-item">
+                        <div class="stat-header"><span>Maksimum Hız</span><span id="stat-speed">348 KM/H</span></div>
+                        <div class="stat-track"><div class="stat-fill" id="fill-speed" style="width: 92%;"></div></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-header"><span>Hızlanma (0-100)</span><span id="stat-accel">2.9 SN</span></div>
+                        <div class="stat-track"><div class="stat-fill" id="fill-accel" style="width: 95%;"></div></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-header"><span>Yol Tutuş (Pacejka Drift)</span><span id="stat-handling">PRO SPEC</span></div>
+                        <div class="stat-track"><div class="stat-fill" id="fill-handling" style="width: 88%;"></div></div>
+                    </div>
+                </div>
+
+                <div class="car-nav-row">
+                    <button class="carousel-btn" onclick="prevCar()">◀ Önceki</button>
+                    <span style="font-size:0.8rem; font-weight:700; color:#94a3b8;" id="car-index-indicator">1 / 5</span>
+                    <button class="carousel-btn" onclick="nextCar()">Sonraki ▶</button>
+                </div>
+            </div>
+
+            <!-- Police Fleet Intelligence Card -->
+            <div style="margin-top:10px; background:rgba(15,23,42,0.85); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px; backdrop-filter:blur(8px);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-size:0.75rem; font-weight:900; color:#ef4444; letter-spacing:1px;">🚨 EMNİYET SİLAH DONANIMI (EMP & TERMİT)</span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
+                        <img src="assets/images/police_interceptor.jpg" alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
+                        <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#f8fafc;">INTERCEPTOR (EMP DART)</div>
+                    </div>
+                    <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
+                        <img src="assets/images/police_rhino.jpg" alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
+                        <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#ef4444;">RHINO (KOR TERMİT)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === 2. IN-GAME HUD SYSTEM === -->
+    <div id="ingame-hud">
+        <div id="cam-pill">KAMERA: TAKİP (CHASE)</div>
+
+        <!-- Top Heat Bar -->
+        <div id="hud-top">
+            <div class="heat-badge">
+                <span class="heat-flame">🔥</span>
+                <span id="heat-text">HEAT 1</span>
+            </div>
+            <div class="hud-stat">
+                <span class="stat-label">Takip Süresi</span>
+                <span class="stat-val" id="time-val">00:00</span>
+            </div>
+            <div class="hud-stat">
+                <span class="stat-label">Aktif Polis</span>
+                <span class="stat-val" id="cops-val" style="color:#ef4444;">2 / 20</span>
+            </div>
+            <div class="hud-stat">
+                <span class="stat-label">Sonraki Kademe</span>
+                <span class="stat-val" id="next-heat-val">05:00</span>
+            </div>
+            <div class="hud-stat" style="border-left: 1px solid rgba(255,255,255,0.15); padding-left: 14px;">
+                <span class="stat-label">🧠 POLİS YAPAY ZEKASI</span>
+                <span class="stat-val" id="ai-tactic-val" style="color:#fbbf24; font-size:0.82rem; font-weight:900;">🔒 KUTULAMA (BOX-IN)</span>
+            </div>
+        </div>
+
+        <!-- Heat Quick-Selector Switcher -->
+        <div id="heat-selector-bar">
+            <button class="heat-btn active" id="hbtn-1" onclick="setInstantHeat(1)">H1</button>
+            <button class="heat-btn" id="hbtn-2" onclick="setInstantHeat(2)">H2</button>
+            <button class="heat-btn" id="hbtn-3" onclick="setInstantHeat(3)">H3 (EMP)</button>
+            <button class="heat-btn" id="hbtn-4" onclick="setInstantHeat(4)">H4 (Rhino)</button>
+            <button class="heat-btn" id="hbtn-5" onclick="setInstantHeat(5)">H5</button>
+            <button class="heat-btn max" id="hbtn-10" onclick="setInstantHeat(10)">🔥 H10 (20 POLİS & KAOS)</button>
+        </div>
+
+        <div id="radio-dispatch">
+            <span>📻</span>
+            <span id="radio-text">MERKEZ: ŞÜPHELİ YÜKSEK HIZLA İLERLİYOR, TÜM BİRİMLER TAKİBE GEÇİN!</span>
+        </div>
+
+        <div id="threat-alert-box">
+            <div class="threat-title" id="threat-title">⚠️ EMP KİLİTLENMESİ! ŞERİT DEĞİŞTİR!</div>
+            <div class="threat-meter-bg">
+                <div class="threat-meter-fill" id="threat-fill"></div>
+            </div>
+        </div>
+
+        <!-- Left Controls & Info -->
+        <div id="hud-left">
+            <div style="font-weight:900; color:#fff; margin-bottom:6px; font-size:0.85rem;">KONTROLLER</div>
+            <div><span class="key-tag">W</span> / <span class="key-tag">↑</span> : Gaz</div>
+            <div><span class="key-tag">S</span> / <span class="key-tag">↓</span> : Fren / Geri Vites (R)</div>
+            <div><span class="key-tag">A</span> / <span class="key-tag">D</span> : Direksiyon</div>
+            <div><span class="key-tag">BOŞLUK</span> : El Freni (Drift)</div>
+            <div><span class="key-tag">SHIFT</span> : Nitro Boost (Mavi Alev)</div>
+            <div><span class="key-tag">C</span> : Kamera Değiştir (Kokpit / Takip)</div>
+            <div><span class="key-tag">1-9, 0</span> : Anında Heat Değiştir (0=H10)</div>
+            <button class="menu-return-btn" onclick="returnToMainMenu()">⚙️ Garaja / Menüye Dön</button>
+        </div>
+
+        <!-- Bottom Right Gauges & Tachometer -->
+        <div id="hud-bottom">
+            <div class="speedo-wrap">
+                <div class="speed-val" id="speed-display">0</div>
+                <div class="speed-unit">KM/H</div>
+            </div>
+            <div class="rpm-bar-bg">
+                <div class="rpm-bar-fill" id="rpm-bar"></div>
+            </div>
+            <div class="gear-nitro-row">
+                <div class="gear-badge" id="gear-display">1</div>
+                <div class="nitro-bar-container">
+                    <div class="nitro-label">NOS (NITRO)</div>
+                    <div class="nitro-track"><div class="nitro-fill" id="nitro-bar"></div></div>
+                </div>
+                <div style="font-size:0.85rem; font-weight:800; color:#38bdf8;" id="rpm-display">950 RPM</div>
+            </div>
+            <div class="health-bar-container">
+                <div class="health-label-row">
+                    <span>Zırh / Şasi Bütünlüğü</span>
+                    <span id="health-val">100%</span>
+                </div>
+                <div class="health-bar-bg">
+                    <div class="health-bar-fill" id="health-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js + GLTFLoader + OBJLoader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+    <script>
+        // --- 1. Audio Engine (Web Audio API Synthesizer) ---
+        let audioCtx = null;
+        let engineOsc = null;
+        let engineGain = null;
+
+        function initAudio() {
+            if (audioCtx) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            engineOsc = audioCtx.createOscillator();
+            engineGain = audioCtx.createGain();
+            engineOsc.type = 'sawtooth';
+            engineOsc.frequency.setValueAtTime(65, audioCtx.currentTime);
+            engineGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(450, audioCtx.currentTime);
+
+            engineOsc.connect(filter);
+            filter.connect(engineGain);
+            engineGain.connect(audioCtx.destination);
+            engineOsc.start();
+        }
+
+        function playSfx(type) {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            if (type === 'crash' || type === 'takedown') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(type === 'takedown' ? 190 : 130, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'skid') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(340 + Math.random() * 80, now);
+                osc.frequency.linearRampToValueAtTime(240, now + 0.15);
+                gain.gain.setValueAtTime(0.16, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'emp_zap') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.5);
+                gain.gain.setValueAtTime(0.35, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            } else if (type === 'repair') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523, now);
+                osc.frequency.setValueAtTime(659, now + 0.12);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'emp_beep') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1100, now);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            }
+        }
+
+        // --- 2. Game State & Scene Setup ---
+        const GAME_STATE = { MENU: 0, PLAYING: 1, BUSTED: 2 };
+        let currentGameState = GAME_STATE.MENU;
+
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+        renderer.shadowMap.enabled = false;
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x060c18, 250, 1050);
+
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1200);
+        let cameraMode = 0;
+        const camPill = document.getElementById('cam-pill');
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        const textureLoader = new THREE.TextureLoader();
+        const gltfLoader = new THREE.GLTFLoader();
+        const objLoader = new THREE.OBJLoader();
+
+        // Atmospheric Balanced Night Lighting
+        const ambientLight = new THREE.AmbientLight(0x384a62, 1.55);
+        scene.add(ambientLight);
+
+        const moonLight = new THREE.DirectionalLight(0x9cc2f0, 1.6);
+        moonLight.position.set(70, 160, -40);
+        scene.add(moonLight);
+        scene.add(moonLight.target);
+
+        const roadFillLight = new THREE.DirectionalLight(0x223348, 0.9);
+        roadFillLight.position.set(-60, 90, 60);
+        scene.add(roadFillLight);
+        scene.add(roadFillLight.target);
+
+        // Showroom Turntable Ring
+        const turntableGeo = new THREE.RingGeometry(0.1, 5.8, 64);
+        const turntableMat = new THREE.MeshStandardMaterial({ color: 0x223348, roughness: 0.2, metalness: 0.85 });
+        const turntable = new THREE.Mesh(turntableGeo, turntableMat);
+        turntable.rotation.x = -Math.PI / 2;
+        turntable.position.set(0, 0.03, 0);
+        scene.add(turntable);
+
+        // Showroom Giant 8K LED Billboard Screen
+        const billboardGeo = new THREE.PlaneGeometry(16, 9);
+        const billboardMat = new THREE.MeshBasicMaterial({
+            map: textureLoader.load('assets/images/bmw_m3_gtr.jpg'),
+            side: THREE.DoubleSide
+        });
+        const showroomBillboard = new THREE.Mesh(billboardGeo, billboardMat);
+        showroomBillboard.position.set(0, 5.2, -10.5);
+        scene.add(showroomBillboard);
+
+        const neonRingGeo = new THREE.RingGeometry(5.85, 6.05, 64);
+        const neonRingMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+        const neonRing = new THREE.Mesh(neonRingGeo, neonRingMat);
+        neonRing.rotation.x = -Math.PI / 2;
+        neonRing.position.set(0, 0.035, 0);
+        scene.add(neonRing);
+
+        // --- 4. INFINITE HIGHWAY CHUNK SYSTEM ---
+        const CHUNK_LEN = 160;
+        const NUM_CHUNKS = 22;
+        const highwayChunks = [];
+        const repairPickups = [];
+
+        const roadMat = new THREE.MeshStandardMaterial({ 
+            color: 0x242a36, 
+            roughness: 0.75, 
+            metalness: 0.08 
+        });
+        const asphaltGeo = new THREE.PlaneGeometry(48, CHUNK_LEN);
+
+        const stripeYellowMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+        const stripeWhiteMat  = new THREE.MeshBasicMaterial({ color: 0xe2e8f0 });
+        const guardrailMat    = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.85, roughness: 0.2 });
+        const poleMat         = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7 });
+        const bulbMat         = new THREE.MeshBasicMaterial({ color: 0xfff0d0 });
+        const groundGlowMat   = new THREE.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.28, side: THREE.DoubleSide });
+
+        const reflectorYellowMat = new THREE.MeshBasicMaterial({ color: 0xffbb00 });
+        const reflectorWhiteMat  = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const reflectorGeo       = new THREE.SphereGeometry(0.22, 6, 6);
+
+        const wrenchGeo = new THREE.BoxGeometry(0.3, 1.2, 0.3);
+        const wrenchMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+
+        function createHighwayChunk(chunkIndex) {
+            const chunkGrp = new THREE.Group();
+            chunkGrp.position.z = (chunkIndex - 3) * CHUNK_LEN;
+
+            const roadMesh = new THREE.Mesh(asphaltGeo, roadMat);
+            roadMesh.rotation.x = -Math.PI / 2;
+            chunkGrp.add(roadMesh);
+
+            for (let z = -CHUNK_LEN / 2 + 10; z < CHUNK_LEN / 2; z += 20) {
+                [-0.4, 0.4].forEach(x => {
+                    const stripe = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 10), stripeYellowMat);
+                    stripe.rotation.x = -Math.PI / 2;
+                    stripe.position.set(x, 0.02, z);
+                    chunkGrp.add(stripe);
+                });
+            }
+
+            [-9, -4.5, 4.5, 9].forEach(x => {
+                for (let z = -CHUNK_LEN / 2 + 10; z < CHUNK_LEN / 2; z += 20) {
+                    const dash = new THREE.Mesh(new THREE.PlaneGeometry(0.25, 8), stripeWhiteMat);
+                    dash.rotation.x = -Math.PI / 2;
+                    dash.position.set(x, 0.02, z);
+                    chunkGrp.add(dash);
+                }
+            });
+
+            [-21.5, 21.5].forEach(x => {
+                const edgeLine = new THREE.Mesh(new THREE.PlaneGeometry(0.6, CHUNK_LEN), stripeWhiteMat);
+                edgeLine.rotation.x = -Math.PI / 2;
+                edgeLine.position.set(x, 0.02, 0);
+                chunkGrp.add(edgeLine);
+            });
+
+            [-23, 23].forEach(x => {
+                const rail = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.7, CHUNK_LEN), guardrailMat);
+                rail.position.set(x, 0.55, 0);
+                chunkGrp.add(rail);
+
+                for (let z = -CHUNK_LEN / 2 + 10; z < CHUNK_LEN / 2; z += 20) {
+                    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.8), poleMat);
+                    post.position.set(x, 0.4, z);
+                    chunkGrp.add(post);
+                }
+            });
+
+            for (let z = -CHUNK_LEN / 2 + 5; z < CHUNK_LEN / 2; z += 20) {
+                const rL = new THREE.Mesh(reflectorGeo, reflectorYellowMat);
+                rL.position.set(-22.2, 0.35, z);
+                chunkGrp.add(rL);
+
+                const rR = new THREE.Mesh(reflectorGeo, reflectorWhiteMat);
+                rR.position.set(22.2, 0.35, z);
+                chunkGrp.add(rR);
+            }
+
+            [-CHUNK_LEN / 4, CHUNK_LEN / 4].forEach(z => {
+                [-24.5, 24.5].forEach(x => {
+                    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 14), poleMat);
+                    pole.position.set(x, 7, z);
+                    chunkGrp.add(pole);
+
+                    const arm = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.2, 0.2), poleMat);
+                    arm.position.set(x > 0 ? x - 2.5 : x + 2.5, 13.8, z);
+                    chunkGrp.add(arm);
+
+                    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.7, 10, 10), bulbMat);
+                    bulb.position.set(x > 0 ? x - 5.0 : x + 5.0, 13.5, z);
+                    chunkGrp.add(bulb);
+
+                    const pool = new THREE.Mesh(new THREE.CircleGeometry(11, 16), groundGlowMat);
+                    pool.rotation.x = -Math.PI / 2;
+                    pool.position.set(x > 0 ? x - 8.0 : x + 8.0, 0.025, z);
+                    chunkGrp.add(pool);
+                });
+            });
+
+            if (chunkIndex % 3 === 0) {
+                const gantryGrp = new THREE.Group();
+                const beam = new THREE.Mesh(new THREE.BoxGeometry(49, 1.2, 1.2), guardrailMat);
+                beam.position.set(0, 11, 0);
+                gantryGrp.add(beam);
+
+                const signMat = new THREE.MeshBasicMaterial({ color: 0x065f46 });
+                const sign = new THREE.Mesh(new THREE.PlaneGeometry(16, 4.5), signMat);
+                sign.position.set(0, 11, 0.7);
+                gantryGrp.add(sign);
+
+                chunkGrp.add(gantryGrp);
+            }
+
+            const buildingGeo = new THREE.BoxGeometry(20 + Math.random() * 15, 40 + Math.random() * 60, 25);
+            const buildingMat = new THREE.MeshStandardMaterial({ color: 0x0a0f1d, roughness: 0.6, metalness: 0.4 });
+            [-1, 1].forEach(side => {
+                const bldg = new THREE.Mesh(buildingGeo, buildingMat);
+                bldg.position.set(side * (48 + Math.random() * 15), 25, (Math.random() - 0.5) * 60);
+                chunkGrp.add(bldg);
+            });
+
+            if (chunkIndex % 4 === 1) {
+                const pickupGrp = new THREE.Group();
+                const wrench = new THREE.Mesh(wrenchGeo, wrenchMat);
+                wrench.rotation.z = Math.PI / 4;
+                pickupGrp.add(wrench);
+
+                const glowRing = new THREE.Mesh(new THREE.RingGeometry(0.8, 1.1, 16), new THREE.MeshBasicMaterial({ color: 0x10b981, side: THREE.DoubleSide }));
+                pickupGrp.add(glowRing);
+
+                pickupGrp.position.set((Math.random() - 0.5) * 20, 1.4, 0);
+                chunkGrp.add(pickupGrp);
+
+                repairPickups.push({ group: pickupGrp, chunk: chunkGrp, active: true });
+            }
+
+            scene.add(chunkGrp);
+            return chunkGrp;
+        }
+
+        for (let i = 0; i < NUM_CHUNKS; i++) {
+            highwayChunks.push(createHighwayChunk(i));
+        }
+
+        function updateHighwayChunks(playerZ) {
+            // Bidirectional self-healing highway recycling:
+            // Guarantees road is ALWAYS rendered whether driving forward, backward, or spinning out!
+            let safety = 0;
+            while (safety++ < 25) {
+                let minChunk = highwayChunks[0];
+                let maxChunk = highwayChunks[0];
+                for (let i = 1; i < highwayChunks.length; i++) {
+                    if (highwayChunks[i].position.z < minChunk.position.z) minChunk = highwayChunks[i];
+                    if (highwayChunks[i].position.z > maxChunk.position.z) maxChunk = highwayChunks[i];
+                }
+
+                // If player moves forward (+Z) and chunk is left behind:
+                if (minChunk.position.z < playerZ - 480) {
+                    minChunk.position.z = maxChunk.position.z + CHUNK_LEN;
+                    repairPickups.forEach(p => {
+                        if (p.chunk === minChunk) {
+                            p.active = true;
+                            p.group.visible = true;
+                        }
+                    });
+                }
+                // If player moves backward (-Z) or spun around:
+                else if (maxChunk.position.z > playerZ + 2560) {
+                    maxChunk.position.z = minChunk.position.z - CHUNK_LEN;
+                    repairPickups.forEach(p => {
+                        if (p.chunk === maxChunk) {
+                            p.active = true;
+                            p.group.visible = true;
+                        }
+                    });
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // --- 5. DEDICATED HIGH-DETAIL PROCEDURAL 3D CAR FACTORY ---
+        // Builds authentic, unique 3D models for EACH car in the game!
+        function buildCar3DModel(cfg) {
+            const grp = new THREE.Group();
+            const carbonMat = new THREE.MeshStandardMaterial({ color: 0x121215, roughness: 0.3, metalness: 0.7 });
+            const glassMat = new THREE.MeshStandardMaterial({ color: 0x05070a, roughness: 0.05, metalness: 0.95 });
+            const chromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.95 });
+            const paintMat = new THREE.MeshStandardMaterial({ color: cfg.bodyColor, roughness: 0.12, metalness: 0.85 });
+            const tireMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
+
+            // Helper for 4 wheels with custom rim styling
+            function addWheels(rimColor, isBBS = false) {
+                const rimMat = new THREE.MeshStandardMaterial({ color: rimColor, roughness: 0.25, metalness: 0.85 });
+                const wheelGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.32, 16);
+                wheelGeo.rotateZ(Math.PI / 2);
+                const positions = [
+                    [-1.02, 0.38, 1.3],
+                    [ 1.02, 0.38, 1.3],
+                    [-1.02, 0.38, -1.3],
+                    [ 1.02, 0.38, -1.3]
+                ];
+                positions.forEach(pos => {
+                    const w = new THREE.Mesh(wheelGeo, tireMat);
+                    w.position.set(...pos);
+
+                    // Inner Rim Disc
+                    const rimCap = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.33, 12), rimMat);
+                    rimCap.rotation.z = Math.PI / 2;
+                    w.add(rimCap);
+
+                    grp.add(w);
+                });
+            }
+
+            if (cfg.name === "BMW M3 GTR") {
+                // === 1. LEGENDARY BMW M3 GTR (E46 WIDEBODY) ===
+                // Lower Body with Aggressive Widebody Arches
+                const mainBody = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.65, 4.5), paintMat);
+                mainBody.position.y = 0.55;
+                grp.add(mainBody);
+
+                // Flared Boxy Front & Rear Arches
+                [-1, 1].forEach(side => {
+                    const archF = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.45, 1.15), paintMat);
+                    archF.position.set(side * 1.05, 0.55, 1.3);
+                    grp.add(archF);
+
+                    const archR = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.48, 1.25), paintMat);
+                    archR.position.set(side * 1.06, 0.56, -1.3);
+                    grp.add(archR);
+                });
+
+                // Dual Kidney Front Grille
+                [-0.22, 0.22].forEach(x => {
+                    const kidney = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, 0.08), chromeMat);
+                    kidney.position.set(x, 0.56, 2.27);
+                    grp.add(kidney);
+
+                    const blackMesh = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.09), carbonMat);
+                    blackMesh.position.set(x, 0.56, 2.27);
+                    grp.add(blackMesh);
+                });
+
+                // Vented Hood with Dual Diagonal Carbon Extractor Louvers
+                const hood = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.15, 1.7), paintMat);
+                hood.position.set(0, 0.88, 1.1);
+                grp.add(hood);
+
+                [-0.45, 0.45].forEach(x => {
+                    const vent = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.05, 0.55), carbonMat);
+                    vent.rotation.y = (x > 0 ? -0.25 : 0.25);
+                    vent.position.set(x, 0.96, 1.15);
+                    grp.add(vent);
+                });
+
+                // Iconic Diagonal Most Wanted Blue Vinyl Stripes
+                const stripeMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.2 });
+                const centerStripe = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.68, 4.54), stripeMat);
+                centerStripe.position.y = 0.56;
+                grp.add(centerStripe);
+
+                // Cabin & Carbon Roof
+                const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.55, 2.15), glassMat);
+                cabin.position.set(0, 1.05, -0.2);
+                grp.add(cabin);
+
+                const roof = new THREE.Mesh(new THREE.BoxGeometry(1.48, 0.05, 1.6), carbonMat);
+                roof.position.set(0, 1.34, -0.2);
+                grp.add(roof);
+
+                // Side-Exit Dual Exhausts (under driver/passenger door)
+                const sideExhaust = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.2, 8), chromeMat);
+                sideExhaust.rotation.z = Math.PI / 2;
+                sideExhaust.position.set(-1.08, 0.25, -0.3);
+                grp.add(sideExhaust);
+
+                // Carbon Front Splitter & Rear Diffuser
+                const splitter = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.08, 0.6), carbonMat);
+                splitter.position.set(0, 0.22, 2.3);
+                grp.add(splitter);
+
+                // Tall Aluminum Upright Carbon GT Wing
+                const wing = new THREE.Mesh(new THREE.BoxGeometry(2.25, 0.06, 0.42), carbonMat);
+                wing.position.set(0, 1.45, -2.15);
+                grp.add(wing);
+
+                [-0.65, 0.65].forEach(x => {
+                    const strut = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.42, 0.18), chromeMat);
+                    strut.position.set(x, 1.22, -2.15);
+                    grp.add(strut);
+                });
+
+                addWheels(0xd1d5db, true); // BBS Silver Mesh
+
+            } else if (cfg.name === "Ferrari 458 GT") {
+                // === 2. SCUDERIA RACE SPEC FERRARI 458 GT ===
+                // Low-slung sharp aerodynamic wedge front nose
+                const nose = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.45, 2.2), paintMat);
+                nose.position.set(0, 0.45, 1.2);
+                grp.add(nose);
+
+                const rearBody = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.68, 2.4), paintMat);
+                rearBody.position.set(0, 0.58, -1.05);
+                grp.add(rearBody);
+
+                // Swept-Back Elongated LED Headlight Strips
+                const lightMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
+                [-0.7, 0.7].forEach(x => {
+                    const hl = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, 0.65), lightMat);
+                    hl.position.set(x, 0.68, 1.6);
+                    grp.add(hl);
+                });
+
+                // Teardrop Cockpit Canopy
+                const canopy = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.52, 2.0), glassMat);
+                canopy.position.set(0, 0.98, -0.15);
+                grp.add(canopy);
+
+                // Mid-Engine Bay Glass with Visible Red V8 Intake Manifolds!
+                const engBay = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.08, 0.9), glassMat);
+                engBay.position.set(0, 0.94, -1.2);
+                grp.add(engBay);
+
+                [-0.2, 0.2].forEach(x => {
+                    const manifold = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.6, 8), new THREE.MeshStandardMaterial({ color: 0xd90429, roughness: 0.3 }));
+                    manifold.rotation.x = Math.PI / 2;
+                    manifold.position.set(x, 0.88, -1.2);
+                    grp.add(manifold);
+                });
+
+                // Signature Triple Center Exhaust Tips
+                [-0.08, 0, 0.08].forEach(x => {
+                    const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.2, 8), chromeMat);
+                    tip.rotation.x = Math.PI / 2;
+                    tip.position.set(x, 0.42, -2.28);
+                    grp.add(tip);
+                });
+
+                // Swan-Neck Racing Carbon Wing
+                const wing = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.06, 0.42), carbonMat);
+                wing.position.set(0, 1.35, -2.1);
+                grp.add(wing);
+
+                [-0.6, 0.6].forEach(x => {
+                    const strut = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.38, 0.15), carbonMat);
+                    strut.position.set(x, 1.15, -2.05);
+                    grp.add(strut);
+                });
+
+                // Torpilli Crimson Gold Scuderia Underglow
+                const underglowGeo = new THREE.PlaneGeometry(2.1, 4.0);
+                const underglowMat = new THREE.MeshBasicMaterial({ color: 0xff0033, transparent: true, opacity: 0.65, side: THREE.DoubleSide });
+                const underglow = new THREE.Mesh(underglowGeo, underglowMat);
+                underglow.rotation.x = -Math.PI / 2;
+                underglow.position.y = 0.06;
+                grp.add(underglow);
+
+                addWheels(0xeab308, false); // Forged Scuderia Gold Wheels
+
+            } else if (cfg.name === "Nissan Skyline R34") {
+                // === 3. NISSAN SKYLINE GT-R R34 (JDM TUNER GOD) ===
+                // Muscular boxy JDM Body
+                const body = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.68, 4.6), paintMat);
+                body.position.y = 0.58;
+                grp.add(body);
+
+                // Nismo Front Bumper with Large Intercooler Mouth & Silver Radiator Mesh
+                const intercooler = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.32, 0.15), chromeMat);
+                intercooler.position.set(0, 0.38, 2.32);
+                grp.add(intercooler);
+
+                // Dual Square Front Headlights
+                const r34LightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                [-0.75, 0.75].forEach(x => {
+                    const hl = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.16, 0.1), r34LightMat);
+                    hl.position.set(x, 0.72, 2.29);
+                    grp.add(hl);
+                });
+
+                // Cabin with Distinctive Straight JDM Roofline
+                const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.56, 2.3), glassMat);
+                cabin.position.set(0, 1.08, -0.15);
+                grp.add(cabin);
+
+                // SIGNATURE SKYLINE 4 ROUND TAILLIGHTS! (The unmistakable GTR icon)
+                const tailMat = new THREE.MeshBasicMaterial({ color: 0xff0022 });
+                [-0.72, -0.42, 0.42, 0.72].forEach(x => {
+                    const light = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.08, 16), tailMat);
+                    light.rotation.x = Math.PI / 2;
+                    light.position.set(x, 0.65, -2.31);
+                    grp.add(light);
+                });
+
+                // Massive 4-Inch Angled Titanium Cannon Exhaust (Fart Cannon!)
+                const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.45, 12), new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.9, roughness: 0.1 }));
+                tip.rotation.x = Math.PI / 2 + 0.15;
+                tip.rotation.y = -0.2;
+                tip.position.set(-0.75, 0.28, -2.35);
+                grp.add(tip);
+
+                // High-Mount R34 GTR Rear Wing with Adjustable Blade
+                const wing = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.08, 0.38), paintMat);
+                wing.position.set(0, 1.45, -2.1);
+                grp.add(wing);
+
+                [-0.65, 0.65].forEach(x => {
+                    const strut = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.42, 0.25), paintMat);
+                    strut.position.set(x, 1.22, -2.1);
+                    grp.add(strut);
+                });
+
+                addWheels(0xd97706); // Bronze TE37 concave rims
+
+            } else if (cfg.name === "Porsche 911 GT3 RS") {
+                // === 4. PORSCHE 911 GT3 RS (APEX TRACK WEAPON) ===
+                // Sloping Front Hood & Curved 911 Nose
+                const nose = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.52, 2.2), paintMat);
+                nose.position.set(0, 0.52, 1.15);
+                grp.add(nose);
+
+                // Iconic Round Oval Headlights with LED Halos
+                const porscheHaloMat = new THREE.MeshBasicMaterial({ color: 0xf8fafc });
+                [-0.68, 0.68].forEach(x => {
+                    const hl = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 16), porscheHaloMat);
+                    hl.rotation.x = 0.4;
+                    hl.position.set(x, 0.78, 1.8);
+                    grp.add(hl);
+                });
+
+                // Front Fender Louvers / Shark-Gill Aerodynamic Slats
+                [-0.72, 0.72].forEach(x => {
+                    for (let s = -0.15; s <= 0.15; s += 0.1) {
+                        const louver = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.02, 0.06), carbonMat);
+                        louver.position.set(x, 0.88, 1.2 + s);
+                        grp.add(louver);
+                    }
+                });
+
+                // Wide Flared Rear Hips (Iconic 911 Turbo haunches)
+                const rearBody = new THREE.Mesh(new THREE.BoxGeometry(2.18, 0.7, 2.3), paintMat);
+                rearBody.position.set(0, 0.58, -1.05);
+                grp.add(rearBody);
+
+                // Sloping Teardrop Fastback Roofline
+                const canopy = new THREE.Mesh(new THREE.BoxGeometry(1.48, 0.54, 2.1), glassMat);
+                canopy.position.set(0, 1.02, -0.2);
+                grp.add(canopy);
+
+                // Acid Green Interior Roll Cage (Visible through rear window!)
+                const cageMat = new THREE.MeshStandardMaterial({ color: 0x10b981, metalness: 0.8 });
+                const cageBar = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.3, 8), cageMat);
+                cageBar.rotation.z = Math.PI / 4;
+                cageBar.position.set(0, 1.05, -0.7);
+                grp.add(cageBar);
+
+                // Rear Engine Deck with Horizontal Cooling Slats
+                for (let z = -1.5; z > -1.9; z -= 0.1) {
+                    const slat = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 0.04), carbonMat);
+                    slat.position.set(0, 0.92, z);
+                    grp.add(slat);
+                }
+
+                // Dual Central Titanium Exhaust Pipes (mounted high in the diffuser)
+                [-0.07, 0.07].forEach(x => {
+                    const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.25, 12), chromeMat);
+                    pipe.rotation.x = Math.PI / 2;
+                    pipe.position.set(x, 0.44, -2.25);
+                    grp.add(pipe);
+                });
+
+                // GIANT TOP-HUNG SWAN-NECK GT3 RS CARBON WING
+                const wing = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.48), carbonMat);
+                wing.position.set(0, 1.48, -2.15);
+                grp.add(wing);
+
+                // Swan-Neck Curved Top Struts
+                [-0.65, 0.65].forEach(x => {
+                    const strut = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.48, 0.2), carbonMat);
+                    strut.position.set(x, 1.25, -2.05);
+                    grp.add(strut);
+                });
+
+                // Wing Endplates
+                [-1.2, 1.2].forEach(x => {
+                    const ep = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.35, 0.5), carbonMat);
+                    ep.position.set(x, 1.48, -2.15);
+                    grp.add(ep);
+                });
+
+                addWheels(0x0a0a0c); // Matte Black Lightweight Wheels
+
+            } else {
+                // Default / GT Supercar Model
+                const body = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.65, 4.5), paintMat);
+                body.position.y = 0.55;
+                grp.add(body);
+
+                const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.55, 2.2), glassMat);
+                cabin.position.set(0, 1.05, -0.2);
+                grp.add(cabin);
+
+                const wing = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.08, 0.42), carbonMat);
+                wing.position.set(0, 1.35, -2.1);
+                grp.add(wing);
+
+                addWheels(0x334155);
+            }
+
+            return grp;
+        }
+
+        const CAR_ROSTER = [
+            {
+                name: "BMW M3 GTR",
+                badge: "MOST WANTED LEGEND",
+                hp: "585 HP",
+                topSpeed: "348 KM/H",
+                accel: "2.9 SN",
+                speedVal: 348,
+                accelVal: 1.15,
+                bodyColor: 0xd1d5db,
+                image: "assets/images/bmw_m3_gtr.jpg"
+            },
+            {
+                name: "Ferrari 458 GT",
+                badge: "TORPİLLİ HYPER SPEC (500 KM/H)",
+                hp: "1850 HP",
+                topSpeed: "500 KM/H",
+                accel: "0.8 SN",
+                speedVal: 500,
+                accelVal: 4.25,
+                isTorpilli: true,
+                bodyColor: 0xd90429,
+                image: "assets/images/ferrari_gt.jpg"
+            },
+            {
+                name: "Nissan Skyline R34",
+                badge: "JDM TUNER GOD",
+                hp: "720 HP",
+                topSpeed: "340 KM/H",
+                accel: "2.8 SN",
+                speedVal: 340,
+                accelVal: 1.20,
+                bodyColor: 0x0055ff,
+                image: "assets/images/nissan_skyline.jpg"
+            },
+            {
+                name: "Porsche 911 GT3 RS",
+                badge: "APEX TRACK WEAPON",
+                hp: "525 HP",
+                topSpeed: "335 KM/H",
+                accel: "3.0 SN",
+                speedVal: 335,
+                accelVal: 1.10,
+                bodyColor: 0x10b981,
+                image: "assets/images/porsche_gt3.jpg",
+                isPorsche: true
+            },
+            {
+                name: "GT Supercar (3D GLB)",
+                badge: "3D MESH IMPORT",
+                hp: "670 HP",
+                topSpeed: "360 KM/H",
+                accel: "2.5 SN",
+                speedVal: 360,
+                accelVal: 1.30,
+                bodyColor: 0xf59e0b,
+                image: "assets/images/ferrari_gt.jpg",
+                useGLB: true,
+                glbPath: "assets/models/sports_car.glb"
+            }
+        ];
+
+        let selectedCarIdx = 0;
+        const playerGroup = new THREE.Group();
+        scene.add(playerGroup);
+
+        let playerMeshGroup = new THREE.Group();
+        playerGroup.add(playerMeshGroup);
+
+        // Cockpit Steering Wheel & Interior Dashboard
+        const cockpitGroup = new THREE.Group();
+        const dash = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.35, 0.6), new THREE.MeshStandardMaterial({ color: 0x0a0a0c, roughness: 0.8 }));
+        dash.position.set(0, 0.95, 0.4);
+        cockpitGroup.add(dash);
+
+        const wheelRingGeo = new THREE.TorusGeometry(0.24, 0.035, 8, 24);
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.6 });
+        const steeringWheel = new THREE.Mesh(wheelRingGeo, wheelMat);
+        steeringWheel.position.set(-0.35, 1.05, 0.15);
+        steeringWheel.rotation.x = Math.PI / 5;
+        cockpitGroup.add(steeringWheel);
+
+        const marker = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 0.04), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+        marker.position.set(0, 0.24, 0);
+        steeringWheel.add(marker);
+
+        const navScreenGeo = new THREE.PlaneGeometry(0.38, 0.22);
+        const navScreenMat = new THREE.MeshBasicMaterial({
+            map: textureLoader.load(CAR_ROSTER[0].image)
+        });
+        const navScreen = new THREE.Mesh(navScreenGeo, navScreenMat);
+        navScreen.position.set(0.18, 1.04, 0.32);
+        navScreen.rotation.x = -0.22;
+        cockpitGroup.add(navScreen);
+
+        playerGroup.add(cockpitGroup);
+
+        const headlightL = new THREE.SpotLight(0xffffff, 4.2, 120, 0.42, 0.4);
+        headlightL.position.set(0.75, 0.6, 2.2);
+        headlightL.target.position.set(0.75, 0.0, 30.0);
+        playerGroup.add(headlightL);
+        playerGroup.add(headlightL.target);
+
+        const headlightR = new THREE.SpotLight(0xffffff, 4.2, 120, 0.42, 0.4);
+        headlightR.position.set(-0.75, 0.6, 2.2);
+        headlightR.target.position.set(-0.75, 0.0, 30.0);
+        playerGroup.add(headlightR);
+        playerGroup.add(headlightR.target);
+
+        const nitroFlames = [];
+        [-0.45, 0.45].forEach(x => {
+            const flameGeo = new THREE.ConeGeometry(0.12, 1.2, 8);
+            flameGeo.rotateX(-Math.PI / 2);
+            const flameMat = new THREE.MeshBasicMaterial({ color: 0x00ccff, transparent: true, opacity: 0.0 });
+            const flame = new THREE.Mesh(flameGeo, flameMat);
+            flame.position.set(x, 0.35, -2.5);
+            playerGroup.add(flame);
+            nitroFlames.push(flame);
+        });
+
+        function updateSelectedCarView() {
+            const cfg = CAR_ROSTER[selectedCarIdx];
+            document.getElementById('menu-car-name').textContent = cfg.name;
+            document.getElementById('menu-car-class').textContent = cfg.badge;
+            document.getElementById('menu-car-hp').textContent = cfg.hp;
+            document.getElementById('stat-speed').textContent = cfg.topSpeed;
+            document.getElementById('stat-accel').textContent = cfg.accel;
+            document.getElementById('car-index-indicator').textContent = `${selectedCarIdx + 1} / ${CAR_ROSTER.length}`;
+
+            const fillSpeed = document.getElementById('fill-speed');
+            if (fillSpeed) {
+                const pct = Math.min(100, Math.round((cfg.speedVal / 500) * 100));
+                fillSpeed.style.width = `${pct}%`;
+            }
+            const fillAccel = document.getElementById('fill-accel');
+            if (fillAccel) {
+                const pct = Math.min(100, Math.round(((cfg.accelVal || 1.0) / 4.25) * 100));
+                fillAccel.style.width = `${pct}%`;
+            }
+
+            const imgEl = document.getElementById('menu-car-img');
+            if (imgEl && cfg.image) {
+                imgEl.src = cfg.image;
+            }
+
+            if (typeof showroomBillboard !== 'undefined' && showroomBillboard.material) {
+                showroomBillboard.material.map = textureLoader.load(cfg.image);
+                showroomBillboard.material.needsUpdate = true;
+            }
+
+            if (typeof navScreen !== 'undefined' && navScreen.material) {
+                const screenImg = cfg.isPorsche ? 'assets/images/porsche_cockpit.jpg' : cfg.image;
+                navScreen.material.map = textureLoader.load(screenImg);
+                navScreen.material.needsUpdate = true;
+            }
+
+            playerGroup.remove(playerMeshGroup);
+
+            if (cfg.customMesh) {
+                playerMeshGroup = cfg.customMesh;
+                playerGroup.add(playerMeshGroup);
+            } else if (cfg.useGLB && cfg.glbPath) {
+                gltfLoader.load(cfg.glbPath, (gltf) => {
+                    const model = gltf.scene;
+                    normalize3DModelScale(model);
+                    playerMeshGroup = model;
+                    playerGroup.add(playerMeshGroup);
+                }, undefined, () => {
+                    playerMeshGroup = buildCar3DModel(cfg);
+                    playerGroup.add(playerMeshGroup);
+                });
+            } else {
+                playerMeshGroup = buildCar3DModel(cfg);
+                playerGroup.add(playerMeshGroup);
+            }
+        }
+
+        window.nextCar = function() {
+            selectedCarIdx = (selectedCarIdx + 1) % CAR_ROSTER.length;
+            updateSelectedCarView();
+        };
+
+        window.prevCar = function() {
+            selectedCarIdx = (selectedCarIdx - 1 + CAR_ROSTER.length) % CAR_ROSTER.length;
+            updateSelectedCarView();
+        };
+
+        // --- 6. USER CUSTOM 3D MODEL LOADER ---
+        function normalize3DModelScale(object3D) {
+            const box = new THREE.Box3().setFromObject(object3D);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const targetLength = 4.6;
+            const scale = targetLength / (size.z > 0.1 ? size.z : maxDim);
+            object3D.scale.set(scale, scale, scale);
+
+            box.setFromObject(object3D);
+            object3D.position.x = -center.x * scale;
+            object3D.position.y = -box.min.y;
+            object3D.position.z = -center.z * scale;
+        }
+
+        function handleUserUploadedModel(file) {
+            const fileName = file.name.toLowerCase();
+            const url = URL.createObjectURL(file);
+
+            showRadioMsg(`📦 3D MODEL İÇE AKTARILIYOR: ${file.name}...`);
+
+            if (fileName.endsWith('.glb') || fileName.endsWith('.gltf')) {
+                gltfLoader.load(url, (gltf) => {
+                    const model = gltf.scene;
+                    normalize3DModelScale(model);
+
+                    const customEntry = {
+                        name: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+                        badge: "ÖZEL 3D MODEL (GLB)",
+                        hp: "750 HP",
+                        topSpeed: "365 KM/H",
+                        accel: "2.4 SN",
+                        speedVal: 365,
+                        accelVal: 1.35,
+                        bodyColor: 0x38bdf8,
+                        image: "assets/images/bmw_m3_gtr.jpg",
+                        customMesh: model
+                    };
+
+                    CAR_ROSTER.push(customEntry);
+                    selectedCarIdx = CAR_ROSTER.length - 1;
+                    updateSelectedCarView();
+                    showRadioMsg(`✅ 3D MODEL BAŞARIYLA YÜKLENDİ! GARAJDA SEÇİLDİ!`);
+                }, undefined, (err) => {
+                    alert("3D model yüklenirken hata oluştu: " + err);
+                });
+            } else if (fileName.endsWith('.obj')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const contents = e.target.result;
+                    const model = objLoader.parse(contents);
+                    normalize3DModelScale(model);
+
+                    const customEntry = {
+                        name: file.name.replace(/\.[^/.]+$/, "").toUpperCase(),
+                        badge: "ÖZEL 3D MODEL (OBJ)",
+                        hp: "750 HP",
+                        topSpeed: "365 KM/H",
+                        accel: "2.4 SN",
+                        speedVal: 365,
+                        accelVal: 1.35,
+                        bodyColor: 0x38bdf8,
+                        image: "assets/images/bmw_m3_gtr.jpg",
+                        customMesh: model
+                    };
+
+                    CAR_ROSTER.push(customEntry);
+                    selectedCarIdx = CAR_ROSTER.length - 1;
+                    updateSelectedCarView();
+                    showRadioMsg(`✅ 3D OBJ MODEL BAŞARIYLA YÜKLENDİ!`);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        window.onCustomFileSelected = function(e) {
+            if (e.target.files && e.target.files[0]) {
+                handleUserUploadedModel(e.target.files[0]);
+            }
+        };
+
+        const dropOverlay = document.getElementById('drop-zone-overlay');
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropOverlay.style.display = 'flex';
+        });
+        window.addEventListener('dragleave', (e) => {
+            if (e.clientX <= 0 || e.clientY <= 0) {
+                dropOverlay.style.display = 'none';
+            }
+        });
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropOverlay.style.display = 'none';
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                handleUserUploadedModel(e.dataTransfer.files[0]);
+            }
+        });
+
+        updateSelectedCarView();
+
+        // --- 7. AUTOMATIC 3D POLICE VEHICLE FACTORY ---
+        function createPoliceCar3D(isRhino) {
+            const grp = new THREE.Group();
+
+            if (isRhino) {
+                // TACTICAL RHINO (Heavy Armored 6x6 SWAT Ramming Truck)
+                const body = new THREE.Mesh(new THREE.BoxGeometry(2.55, 1.45, 5.5), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.8 }));
+                body.position.y = 1.05;
+                grp.add(body);
+
+                // Heavy Steel Ramming Push-Plow with hazard strips
+                const ram = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.75, 0.45), new THREE.MeshStandardMaterial({ color: 0x09090b, metalness: 0.95, roughness: 0.1 }));
+                ram.position.set(0, 0.65, 2.9);
+                grp.add(ram);
+
+                const barMat = new THREE.MeshStandardMaterial({ color: 0x09090b });
+                const bar = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.18, 0.35), barMat);
+                bar.position.set(0, 1.85, 0);
+                grp.add(bar);
+            } else {
+                // POLICE INTERCEPTOR (Dodge Charger / Corvette Pursuit Cruiser)
+                const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.75, 4.6), new THREE.MeshStandardMaterial({ color: 0x05070a, roughness: 0.15, metalness: 0.8 }));
+                body.position.y = 0.55;
+                grp.add(body);
+
+                // White Police Doors & Roof
+                const doors = new THREE.Mesh(new THREE.BoxGeometry(2.12, 0.48, 1.8), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2 }));
+                doors.position.set(0, 0.56, 0);
+                grp.add(doors);
+
+                // Heavy Steel Bullbar
+                const bullbar = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.52, 0.3), new THREE.MeshStandardMaterial({ color: 0x09090b, metalness: 0.8 }));
+                bullbar.position.set(0, 0.46, 2.4);
+                grp.add(bullbar);
+
+                // Searchlight on A-pillar
+                const searchlight = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.15, 8), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+                searchlight.rotation.z = Math.PI / 2;
+                searchlight.position.set(-0.85, 1.05, 0.8);
+                grp.add(searchlight);
+
+                const bar = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.14, 0.3), new THREE.MeshStandardMaterial({ color: 0x09090b }));
+                bar.position.set(0, 1.25, 0);
+                grp.add(bar);
+            }
+
+            const strobeGeo = new THREE.BoxGeometry(0.55, 0.16, 0.25);
+            const redLMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const blueLMat = new THREE.MeshBasicMaterial({ color: 0x0066ff });
+
+            const redL = new THREE.Mesh(strobeGeo, redLMat);
+            redL.position.set(0.45, isRhino ? 1.9 : 1.3, 0);
+            grp.add(redL);
+
+            const blueL = new THREE.Mesh(strobeGeo, blueLMat);
+            blueL.position.set(-0.45, isRhino ? 1.9 : 1.3, 0);
+            grp.add(blueL);
+
+            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 12);
+            const tireMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
+            wheelGeo.rotateZ(Math.PI / 2);
+            [
+                [-1.0, 0.4, 1.35],
+                [ 1.0, 0.4, 1.35],
+                [-1.0, 0.4, -1.35],
+                [ 1.0, 0.4, -1.35]
+            ].forEach(pos => {
+                const w = new THREE.Mesh(wheelGeo, tireMat);
+                w.position.set(...pos);
+                grp.add(w);
+            });
+
+            return { group: grp, redL, blueL };
+        }
+
+        // --- 8. REALISTIC VEHICLE DYNAMICS ---
+        const car = {
+            pos: new THREE.Vector3(0, 0, 0),
+            vel: new THREE.Vector3(0, 0, 0),
+            yaw: 0,
+            yawRate: 0,
+            steerAngle: 0,
+            rpm: 950,
+            gear: 1,
+            speedKmh: 0,
+            health: 100,
+            armor: 100,
+            nitro: 100,
+            isNitroBoosting: false,
+            bountyScore: 0,
+            copsWrecked: 0,
+            empDisabledTimer: 0,
+            damageCooldown: 0,
+            lastHitTimer: 0,
+            spikePunctureTimer: 0
+        };
+
+        const keys = { w: false, s: false, a: false, d: false, space: false, shift: false };
+        window.addEventListener('keydown', (e) => {
+            initAudio();
+            const k = e.key.toLowerCase();
+            if (k === 'w' || e.key === 'ArrowUp') keys.w = true;
+            if (k === 's' || e.key === 'ArrowDown') keys.s = true;
+            if (k === 'a' || e.key === 'ArrowLeft') keys.a = true;
+            if (k === 'd' || e.key === 'ArrowRight') keys.d = true;
+            if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+                keys.space = true;
+                e.preventDefault();
+            }
+            if (e.key === 'Shift') keys.shift = true;
+
+            if (k === 'c') {
+                cameraMode = (cameraMode + 1) % 2;
+                camPill.textContent = cameraMode === 0 ? "KAMERA: TAKİP (CHASE)" : "KAMERA: 1. ŞAHIS KOKPİT (FPS)";
+            }
+
+            if (k === 'r') {
+                // Instant Car Reset & Highway Realignment
+                car.yaw = 0;
+                car.yawRate = 0;
+                car.vel.x = 0;
+                car.vel.z = Math.max(30, Math.abs(car.vel.z));
+                car.pos.x = THREE.MathUtils.clamp(car.pos.x, -14, 14);
+                showRadioMsg("⚡ ARAÇ DÜZELTİLDİ: OTOBANA HİZALANDI!");
+            }
+
+            // Quick Heat Selector Keys 1 to 9, 0 (Key '0' = Heat 10 MAX!)
+            if (e.key >= '1' && e.key <= '9') {
+                setInstantHeat(parseInt(e.key));
+            } else if (e.key === '0') {
+                setInstantHeat(10);
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const k = e.key.toLowerCase();
+            if (k === 'w' || e.key === 'ArrowUp') keys.w = false;
+            if (k === 's' || e.key === 'ArrowDown') keys.s = false;
+            if (k === 'a' || e.key === 'ArrowLeft') keys.a = false;
+            if (k === 'd' || e.key === 'ArrowRight') keys.d = false;
+            if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+                keys.space = false;
+                e.preventDefault();
+            }
+            if (e.key === 'Shift') keys.shift = false;
+        });
+
+        function updatePhysics(dt) {
+            if (currentGameState !== GAME_STATE.PLAYING) return;
+
+            if (car.damageCooldown > 0) {
+                car.damageCooldown -= dt;
+                playerMeshGroup.visible = (Math.floor(Date.now() / 80) % 2 === 0);
+            } else {
+                playerMeshGroup.visible = true;
+            }
+
+            car.lastHitTimer += dt;
+            // Evading cops for 5 seconds recovers health up to 60% at 2% / sec (gives player room to breathe)
+            if (car.lastHitTimer > 5.0 && car.health < 60) {
+                car.health = Math.min(60, car.health + 2.0 * dt);
+            }
+
+            if (car.health <= 0) {
+                triggerGameOver("BUSTED - ARACINIZ PERT OLDU!");
+                return;
+            }
+
+            if (car.empDisabledTimer > 0) {
+                car.empDisabledTimer -= dt;
+                keys.w = false;
+                keys.shift = false;
+            }
+
+            if (car.spikePunctureTimer > 0) {
+                car.spikePunctureTimer -= dt;
+                car.vel.x += (Math.random() - 0.5) * 5.0 * dt;
+            }
+
+            const cfg = CAR_ROSTER[selectedCarIdx];
+            const maxSteer = 0.44;
+            const steerSpeed = 3.8;
+
+            if (keys.a) car.steerAngle = Math.min(maxSteer, car.steerAngle + steerSpeed * dt);
+            else if (keys.d) car.steerAngle = Math.max(-maxSteer, car.steerAngle - steerSpeed * dt);
+            else car.steerAngle *= Math.exp(-9.5 * dt);
+
+            car.isNitroBoosting = false;
+            if (keys.shift && car.nitro > 0 && keys.w && car.empDisabledTimer <= 0) {
+                car.isNitroBoosting = true;
+                if (cfg && cfg.isTorpilli) {
+                    car.nitro = Math.max(0, car.nitro - 6 * dt);
+                } else {
+                    car.nitro = Math.max(0, car.nitro - 22 * dt);
+                }
+            } else {
+                car.nitro = Math.min(100, car.nitro + ((cfg && cfg.isTorpilli) ? 24 : 7) * dt);
+            }
+
+            nitroFlames.forEach(f => {
+                f.material.opacity = car.isNitroBoosting ? 0.95 : 0.0;
+                if (car.isNitroBoosting) {
+                    const scaleMul = (cfg && cfg.isTorpilli) ? 1.85 : 1.0;
+                    f.scale.set((1 + Math.random() * 0.4) * scaleMul, (1 + Math.random() * 0.5) * scaleMul, 1.3 * scaleMul);
+                }
+            });
+
+            // --- REAL FORWARD & REVERSE GEAR LOGIC ---
+            let driveForce = 0;
+            let brakingForce = 0;
+            const isReversing = (car.gear === 'R');
+
+            if (keys.w) {
+                if (isReversing) {
+                    if (car.vel.z < -0.8) {
+                        brakingForce = 13500;
+                    } else {
+                        car.gear = 1;
+                        driveForce = 5800 * (cfg.accelVal || 1.0);
+                    }
+                } else {
+                    const currentGear = typeof car.gear === 'number' ? car.gear : 1;
+                    const gearFactor = (cfg && cfg.isTorpilli) ? 1.0 : Math.max(0.65, 1.0 - (currentGear - 1) * 0.06);
+                    driveForce = (6200 * (cfg.accelVal || 1.0) * gearFactor);
+                    if (car.isNitroBoosting) driveForce *= ((cfg && cfg.isTorpilli) ? 2.6 : 1.75);
+                }
+            } else if (keys.s) {
+                if (!isReversing) {
+                    if (car.vel.z > 1.2) {
+                        brakingForce = (cfg && cfg.isTorpilli) ? 28000 : 15000;
+                    } else {
+                        car.gear = 'R';
+                        driveForce = -4500 * (cfg.accelVal || 1.0);
+                    }
+                } else {
+                    driveForce = -4500 * (cfg.accelVal || 1.0);
+                }
+            } else {
+                if (isReversing && Math.abs(car.vel.z) < 0.3) {
+                    car.gear = 1;
+                }
+            }
+
+            if (keys.space) {
+                brakingForce += (cfg && cfg.isTorpilli) ? 22000 : 8500;
+            }
+
+            if (car.gear !== 'R') {
+                const forwardSpeed = Math.max(0, car.vel.z);
+                const gearRatios = (cfg && cfg.isTorpilli) 
+                    ? [3.2, 2.0, 1.40, 1.02, 0.78, 0.60, 0.46] 
+                    : [3.45, 2.12, 1.48, 1.15, 0.92, 0.74];
+                const maxGear = gearRatios.length;
+                const finalDrive = (cfg && cfg.isTorpilli) ? 3.20 : 3.65;
+                const wheelRadius = 0.34;
+                const maxRpm = (cfg && cfg.isTorpilli) ? 9800 : 8800;
+
+                const gearIdx = Math.min(gearRatios.length, Math.max(1, typeof car.gear === 'number' ? car.gear : 1)) - 1;
+                let calculatedRpm = (forwardSpeed / wheelRadius) * gearRatios[gearIdx] * finalDrive * (60 / (2 * Math.PI));
+                calculatedRpm = Math.max(950, Math.min(maxRpm, calculatedRpm));
+
+                if (calculatedRpm > (maxRpm - 900) && car.gear < maxGear) car.gear++;
+                else if (calculatedRpm < 2700 && car.gear > 1) car.gear--;
+                car.rpm = calculatedRpm;
+            } else {
+                car.rpm = 1200 + (Math.abs(car.vel.z) / 14.0) * 4500;
+            }
+
+            if (engineOsc && audioCtx) {
+                const maxRpmRef = (cfg && cfg.isTorpilli) ? 9800 : 8800;
+                const targetFreq = 45 + (car.rpm / maxRpmRef) * 320;
+                engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.05);
+                engineGain.gain.setTargetAtTime((keys.w || (keys.s && car.gear === 'R')) ? 0.28 : 0.12, audioCtx.currentTime, 0.05);
+            }
+
+            // --- PACEJKA TIRE DYNAMICS & REAL DRIFT OVERSTEER ---
+            const mass = 1420;
+            const vx = car.vel.x;
+            const vz = Math.max(0.1, Math.abs(car.vel.z));
+
+            const steerSign = (car.gear === 'R') ? -1 : 1;
+            const effSteer = car.steerAngle * steerSign;
+
+            const alphaFront = Math.atan2(vx + car.yawRate * 1.35, vz) - effSteer;
+            const alphaRear  = Math.atan2(vx - car.yawRate * 1.45, vz);
+
+            let D_front = (cfg && cfg.isTorpilli) ? 14500 : (9400 * (cfg.accelVal || 1.0));
+            let D_rear  = (cfg && cfg.isTorpilli) ? 14500 : (9400 * (cfg.accelVal || 1.0));
+
+            if (keys.space) {
+                D_rear *= 0.22;
+                if (Math.abs(car.steerAngle) > 0.03 && Math.abs(car.vel.z) > 3.0) {
+                    const driftKick = car.steerAngle * (Math.abs(car.vel.z) / 18.0) * 12.5;
+                    car.yawRate += driftKick * dt;
+                }
+                if (Math.floor(Date.now() / 150) % 2 === 0) playSfx('skid');
+            }
+
+            const B = 8.5;
+            const C = 1.35;
+            const FyFront = -D_front * Math.sin(C * Math.atan(B * alphaFront));
+            const FyRear  = -D_rear  * Math.sin(C * Math.atan(B * alphaRear));
+
+            const dragSign = Math.sign(car.vel.z) || 1;
+            const dragCoeff = (cfg && cfg.isTorpilli) ? 0.08 : 0.32;
+            const dragForce = 0.5 * 1.225 * dragCoeff * 2.1 * car.vel.z * car.vel.z * dragSign;
+
+            let totalFz = driveForce - dragForce;
+            if (brakingForce > 0) {
+                totalFz -= Math.sign(car.vel.z || 1) * brakingForce;
+            }
+
+            const totalFx = FyFront * Math.cos(effSteer) + FyRear;
+            const yawTorque = (FyFront * 1.28) - (FyRear * 1.44);
+
+            const accelZ = (totalFz / mass);
+            const accelX = (totalFx / mass) - (car.vel.z * car.yawRate);
+            const yawAccel = yawTorque / 1950.0;
+
+            car.vel.z += accelZ * dt;
+            car.vel.x += accelX * dt;
+            car.yawRate += yawAccel * dt;
+
+            if (!keys.space && Math.abs(car.steerAngle) < 0.04) {
+                car.yawRate *= Math.exp(-6.5 * dt);
+            }
+
+            if (!keys.w && !keys.s && Math.abs(car.vel.z) < 0.25) {
+                car.vel.z = 0; car.vel.x = 0; car.yawRate = 0;
+            }
+
+            const maxSpeedMs = (cfg && cfg.speedVal ? (cfg.speedVal / 3.6) : 101.5);
+            const topCap = car.spikePunctureTimer > 0 ? 38.0 : maxSpeedMs;
+            if (car.vel.z > topCap) car.vel.z = topCap;
+            if (car.vel.z < -13.5) car.vel.z = -13.5;
+
+            car.yaw += car.yawRate * dt;
+            car.pos.x += (Math.sin(car.yaw) * car.vel.z + Math.cos(car.yaw) * car.vel.x) * dt;
+            car.pos.z += (Math.cos(car.yaw) * car.vel.z - Math.sin(car.yaw) * car.vel.x) * dt;
+
+            if (car.pos.x > 21.0) { car.pos.x = 21.0; car.vel.x *= -0.4; car.vel.z *= 0.95; }
+            if (car.pos.x < -21.0) { car.pos.x = -21.0; car.vel.x *= -0.4; car.vel.z *= 0.95; }
+
+            playerGroup.position.set(car.pos.x, 0, car.pos.z);
+            playerGroup.rotation.y = car.yaw;
+
+            car.speedKmh = car.vel.z * 3.6;
+
+            updateHighwayChunks(car.pos.z);
+
+            repairPickups.forEach(p => {
+                if (!p.active) return;
+                p.group.rotation.y += 2.5 * dt;
+                const pWorldPos = new THREE.Vector3();
+                p.group.getWorldPosition(pWorldPos);
+
+                if (pWorldPos.distanceTo(playerGroup.position) < 3.2) {
+                    p.active = false;
+                    p.group.visible = false;
+                    car.health = Math.min(100, car.health + 30);
+                    playSfx('repair');
+                    triggerRepairFlash();
+                    showRadioMsg("🛠️ ŞASİ VE MOTOR TAMİR EDİLDİ (+%30 CAN)!");
+                }
+            });
+        }
+
+        // --- 9. HIGH-OCTANE POLICE PURSUIT AI & WEAPONS DIRECTOR ---
+        const policeDirector = {
+            heatLevel: 1,
+            timeElapsed: 0,
+            activeCops: [],
+            thermites: [],
+            spikeStrips: [],
+            empLaserMesh: null,
+            targetingCop: null,
+            empLockProgress: 0
+        };
+
+        // --- 9.5 ADVANCED AUTONOMOUS PURSUIT AI SQUAD COORDINATOR ---
+        const tacticalAI = {
+            squadTactic: 'BOX_IN', // 'BOX_IN', 'PINCER', 'PREDICTIVE_INTERCEPT', 'FLANK_WALL_PIN', 'RHINO_RAM'
+            tacticTimer: 10.0,
+            prevPlayerSpeedKmh: 0,
+            playerBrakeCheckCooldown: 0,
+            isPlayerBrakeChecking: false,
+
+            update(dt) {
+                this.tacticTimer -= dt;
+                this.playerBrakeCheckCooldown -= dt;
+
+                const playerSpeedKmh = Math.abs(car.speedKmh);
+                const playerSpeedDrop = (this.prevPlayerSpeedKmh - playerSpeedKmh);
+
+                // Detect Sudden Brake-Check Traps
+                if ((keys.space || keys.s) && playerSpeedDrop > 30 && playerSpeedKmh > 20) {
+                    if (this.playerBrakeCheckCooldown <= 0) {
+                        this.isPlayerBrakeChecking = true;
+                        this.playerBrakeCheckCooldown = 2.2;
+                        showRadioMsg("🚨 MERKEZ: DİKKAT! ŞÜPHELİ FREN TUZAĞI (BRAKE CHECK) YAPIYOR, YANLARA AÇILIN!");
+                    }
+                } else if (this.playerBrakeCheckCooldown <= 0) {
+                    this.isPlayerBrakeChecking = false;
+                }
+
+                this.prevPlayerSpeedKmh = playerSpeedKmh;
+
+                // Rotate Squad AI Tactics periodically
+                if (this.tacticTimer <= 0) {
+                    this.tacticTimer = 13.0 + Math.random() * 6.0;
+                    const tactics = ['BOX_IN', 'PINCER', 'PREDICTIVE_INTERCEPT', 'FLANK_WALL_PIN'];
+                    if (policeDirector.activeCops.some(c => c.isRhino)) {
+                        tactics.push('RHINO_RAM');
+                    }
+                    this.squadTactic = tactics[Math.floor(Math.random() * tactics.length)];
+
+                    if (this.squadTactic === 'BOX_IN') {
+                        showRadioMsg("🚨 MERKEZ: KUTULAMA PROTOKOLÜ (BOX-IN) DEVREDE! DÖRT YÖNDEN SARIN!");
+                    } else if (this.squadTactic === 'PINCER') {
+                        showRadioMsg("🚨 2. & 3. BİRİM: KISKAÇ (PINCER) OPERASYONU! ÇİFT TARAFTAN SIKIŞTIRIN!");
+                    } else if (this.squadTactic === 'PREDICTIVE_INTERCEPT') {
+                        showRadioMsg("🚨 1. BİRİM: ŞÜPHELİNİN KAÇIŞ ÇİZGİSİNİ HESAPLADIM, ÖNÜNÜ KESİYORUM!");
+                    } else if (this.squadTactic === 'FLANK_WALL_PIN') {
+                        showRadioMsg("🚨 BİRİMLER: ŞÜPHELİYİ BARİYERE SÜRÜKLEYİN, DUVARA KİLİTLEYİN!");
+                    } else if (this.squadTactic === 'RHINO_RAM') {
+                        showRadioMsg("🦏 SWAT RHINO: AĞIR KOÇBAŞI HÜCUMU! DOĞRUDAN ÇARPIŞMA ROTASI!");
+                    }
+                }
+            }
+        };
+
+        const laserMat = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.85 });
+        const laserGeo = new THREE.CylinderGeometry(0.08, 0.08, 1, 8);
+        laserGeo.rotateX(Math.PI / 2);
+        const empLaserBeam = new THREE.Mesh(laserGeo, laserMat);
+        empLaserBeam.visible = false;
+        scene.add(empLaserBeam);
+        policeDirector.empLaserMesh = empLaserBeam;
+
+        function getTargetPoliceCount(heat) {
+            if (heat === 1) return 2;
+            if (heat === 2) return 4;
+            if (heat === 3) return 6;
+            if (heat === 4) return 8;
+            if (heat === 5) return 10;
+            if (heat === 6) return 12;
+            if (heat === 7) return 14;
+            if (heat === 8) return 16;
+            if (heat === 9) return 18;
+            return 20; // Heat Level 10: Exactly 20 police cruisers & rhinos!
+        }
+
+        function spawnPoliceFleet(heat) {
+            policeDirector.activeCops.forEach(c => scene.remove(c.mesh.group));
+            policeDirector.activeCops = [];
+
+            const targetCount = getTargetPoliceCount(heat);
+            const playerZ = car.pos.z;
+            const playerX = car.pos.x;
+
+            for (let i = 0; i < targetCount; i++) {
+                const isRhino = (heat >= 4 && i % 3 === 0);
+                const mesh = createPoliceCar3D(isRhino);
+                scene.add(mesh.group);
+
+                const role = isRhino ? 3 : (i % 3);
+                const side = (i % 2 === 0 ? 1 : -1);
+
+                // Strategic initial spawn placement around the player
+                let spawnZ = playerZ - 20 - (i * 6);
+                let spawnX = playerX + side * (3.5 + (i % 4) * 2.8);
+
+                // At Heat 10 or high heat, spawn front roadblocks ahead of player!
+                if (heat >= 7 && i < 4) {
+                    spawnZ = playerZ + 25 + (i * 12);
+                    spawnX = -12 + (i * 8);
+                }
+
+                const cop = {
+                    mesh,
+                    pos: new THREE.Vector3(spawnX, 0, spawnZ),
+                    velZ: isRhino ? 75 : 92,
+                    velX: 0,
+                    yaw: 0,
+                    role: role,
+                    side: side,
+                    isRhino: isRhino,
+                    health: isRhino ? 250 : 100,
+                    maxHealth: isRhino ? 250 : 100,
+                    hasEMP: heat >= 3,
+                    hasThermite: isRhino || (heat >= 4 && i % 2 === 0),
+                    empCooldown: 3 + (i % 3) * 4,
+                    thermiteCooldown: 5 + (i % 3) * 5,
+                    isWrecked: false,
+                    wreckTimer: 0,
+                    wreckVelX: 0,
+                    wreckVelY: 0,
+                    wreckVelZ: 0,
+                    yawAngle: 0,
+                    rollAngle: 0,
+                    pitchAngle: 0,
+                    yawRate: 0,
+                    rollRate: 0,
+                    pitchRate: 0,
+                    tacticalTimer: Math.random() * 2.5
+                };
+                policeDirector.activeCops.push(cop);
+            }
+
+            document.getElementById('cops-val').textContent = `${targetCount} / 20`;
+            document.getElementById('heat-text').textContent = `HEAT ${heat}`;
+
+            for (let h = 1; h <= 10; h++) {
+                const b = document.getElementById(`hbtn-${h}`);
+                if (b) {
+                    if (h === heat) b.classList.add('active');
+                    else b.classList.remove('active');
+                }
+            }
+        }
+
+        // --- INSTANT HEAT SELECTOR (FIXED: Never overridden back to Heat 1!) ---
+        window.setInstantHeat = function(heat) {
+            policeDirector.heatLevel = heat;
+            // Synchronize elapsed time with this heat so natural escalation doesn't override it!
+            policeDirector.timeElapsed = (heat - 1) * 300;
+            spawnPoliceFleet(heat);
+            const count = getTargetPoliceCount(heat);
+            showRadioMsg(`🚨 MERKEZ: TAKİP ŞİDDETİ HEAT ${heat}'E YÜKSELTİLDİ! (${count} POLİS AKTİF EDİLDİ!)`);
+        };
+
+        function triggerEMPShockwave() {
+            const glitch = document.getElementById('emp-glitch');
+            glitch.style.display = 'block';
+            car.empDisabledTimer = 2.4;
+            playSfx('emp_zap');
+            showRadioMsg("⚡ BİRİM 7: ŞÜPHELİYE EMP DART İSABET ETTİ! MOTOR VE NITRO KESİLDİ!");
+            setTimeout(() => { glitch.style.display = 'none'; }, 2200);
+        }
+
+        function showRadioMsg(msg) {
+            const radio = document.getElementById('radio-dispatch');
+            const txt = document.getElementById('radio-text');
+            txt.textContent = msg;
+            radio.style.display = 'flex';
+            setTimeout(() => { radio.style.display = 'none'; }, 4500);
+        }
+
+        function showTakedown(text, bounty) {
+            const overlay = document.getElementById('takedown-overlay');
+            const titleEl = document.getElementById('takedown-text');
+            const subEl = document.getElementById('takedown-bounty');
+            titleEl.textContent = text;
+            subEl.textContent = bounty;
+            overlay.style.display = 'block';
+            playSfx('takedown');
+            setTimeout(() => { overlay.style.display = 'none'; }, 1300);
+        }
+
+        function triggerDamageFlash() {
+            const flash = document.getElementById('damage-flash');
+            flash.style.display = 'block';
+            playSfx('crash');
+            setTimeout(() => { flash.style.display = 'none'; }, 220);
+        }
+
+        function triggerRepairFlash() {
+            const flash = document.getElementById('repair-flash');
+            flash.style.display = 'block';
+            setTimeout(() => { flash.style.display = 'none'; }, 300);
+        }
+
+        function updatePolice(dt) {
+            policeDirector.timeElapsed += dt;
+            tacticalAI.update(dt);
+
+            // Natural 5-minute escalation cycle: Only escalate UPWARDS, never downgrade!
+            const naturalHeat = Math.min(10, 1 + Math.floor(policeDirector.timeElapsed / 300));
+            if (naturalHeat > policeDirector.heatLevel) {
+                policeDirector.heatLevel = naturalHeat;
+                spawnPoliceFleet(policeDirector.heatLevel);
+                showRadioMsg(`🚨 MERKEZ: DİKKAT TÜM BİRİMLER! TAKİP ŞİDDETİ HEAT LEVEL ${policeDirector.heatLevel}'E YÜKSELTİLDİ!`);
+            }
+
+            const strobePhase = (Date.now() % 240) > 120;
+            let currentThreat = null;
+            const playerSpeedZ = Math.max(20.0, Math.abs(car.vel.z));
+
+            policeDirector.activeCops.forEach((cop, idx) => {
+                if (cop.isWrecked) {
+                    cop.wreckTimer -= dt;
+                    // Realistic ground physics with gravity and asphalt friction (NO MORE FLYING TO THE MOON!)
+                    cop.pos.x += cop.wreckVelX * dt;
+                    cop.pos.z += cop.wreckVelZ * dt;
+                    cop.pos.y += cop.wreckVelY * dt;
+
+                    // Gravity pulls down
+                    cop.wreckVelY -= 22.0 * dt;
+
+                    // Ground collision & bouncing on road
+                    if (cop.pos.y <= 0) {
+                        cop.pos.y = 0;
+                        cop.wreckVelY = -cop.wreckVelY * 0.25; // damp bounce
+                        if (Math.abs(cop.wreckVelY) < 0.6) cop.wreckVelY = 0;
+                        // Asphalt friction slows lateral & forward slide
+                        cop.wreckVelX *= Math.max(0, 1 - 3.0 * dt);
+                        cop.wreckVelZ *= Math.max(0, 1 - 2.0 * dt);
+                    }
+
+                    // Guardrail collision on road boundaries
+                    if (cop.pos.x > 21.0) { cop.pos.x = 21.0; cop.wreckVelX = -Math.abs(cop.wreckVelX) * 0.4; }
+                    if (cop.pos.x < -21.0) { cop.pos.x = -21.0; cop.wreckVelX = Math.abs(cop.wreckVelX) * 0.4; }
+
+                    // Realistic rotation / rolling
+                    cop.yawAngle += cop.yawRate * dt;
+                    cop.rollAngle += cop.rollRate * dt;
+                    cop.pitchAngle += cop.pitchRate * dt;
+
+                    // Dampen tumble when on asphalt
+                    if (cop.pos.y <= 0.05) {
+                        cop.yawRate *= Math.max(0, 1 - 2.5 * dt);
+                        cop.rollRate *= Math.max(0, 1 - 3.5 * dt);
+                        cop.pitchRate *= Math.max(0, 1 - 3.5 * dt);
+                    }
+
+                    cop.mesh.group.rotation.set(cop.pitchAngle, cop.yawAngle, cop.rollAngle);
+                    cop.mesh.group.position.copy(cop.pos);
+                    if (cop.mesh.redL) cop.mesh.redL.visible = false;
+                    if (cop.mesh.blueL) cop.mesh.blueL.visible = false;
+
+                    if (cop.wreckTimer <= 0) {
+                        cop.isWrecked = false;
+                        cop.health = cop.maxHealth;
+                        cop.pos.y = 0;
+                        cop.mesh.group.rotation.set(0, 0, 0);
+                        if (cop.mesh.redL) cop.mesh.redL.visible = true;
+                        if (cop.mesh.blueL) cop.mesh.blueL.visible = true;
+                        // Respawn close behind the player in active pursuit
+                        const rearDist = 35 + Math.random() * 20;
+                        cop.pos.set(
+                            car.pos.x + (Math.random() - 0.5) * 16,
+                            0,
+                            car.pos.z - rearDist
+                        );
+                        cop.velZ = playerSpeedZ + 10.0;
+                    }
+                    return;
+                }
+
+                if (cop.mesh.redL && cop.mesh.blueL) {
+                    cop.mesh.redL.material.color.setHex(strobePhase ? 0xff0000 : 0x220000);
+                    cop.mesh.blueL.material.color.setHex(!strobePhase ? 0x0066ff : 0x001133);
+                }
+
+                // --- AGGRESSIVE RUBBER-BANDING & CATCH-UP LOGIC ---
+                // If cop falls far behind, give instant interceptor boost or respawn ahead!
+                const distZ = car.pos.z - cop.pos.z;
+                const distThreshold = Math.max(120, playerSpeedZ * 1.8);
+                if (distZ > distThreshold) {
+                    // Teleport into attack formation!
+                    if (Math.random() > 0.4) {
+                        // Spawn right behind in attack wave
+                        cop.pos.set(car.pos.x + (Math.random() - 0.5) * 16, 0, car.pos.z - (45 + (idx * 4)));
+                        cop.velZ = playerSpeedZ + 12.0;
+                    } else {
+                        // Spawn ahead as an incoming roadblock
+                        cop.pos.set(car.pos.x + (Math.random() - 0.5) * 18, 0, car.pos.z + (70 + (idx * 5)));
+                        cop.velZ = Math.max(30.0, playerSpeedZ * 0.85);
+                    }
+                }
+                if (cop.pos.z - car.pos.z > 240) {
+                    cop.pos.z = car.pos.z + 80 + (idx * 6);
+                }
+
+                cop.tacticalTimer -= dt;
+                if (cop.tacticalTimer <= 0) {
+                    cop.tacticalTimer = 2.5 + Math.random() * 2.0;
+                    cop.side = (Math.random() > 0.5 ? 1 : -1);
+                }
+
+                // --- ADVANCED SQUAD TACTICAL AI (NEURAL LEAD PURSUIT) ---
+                const playerVz = Math.max(18.0, Math.abs(car.vel.z));
+                const playerVx = car.vel.x || 0;
+                const distZToPlayer = cop.pos.z - car.pos.z;
+                const absDistZ = Math.abs(distZToPlayer);
+                const leadTime = THREE.MathUtils.clamp(absDistZ / Math.max(25, playerVz), 0.25, 1.1);
+
+                // Predictive future trajectory calculation (Anticipates player steering/drift)
+                const predictedPlayerX = THREE.MathUtils.clamp(
+                    car.pos.x + (playerVx * leadTime * 1.25) + (car.yawRate || 0) * 4.5 * leadTime,
+                    -20.5, 20.5
+                );
+
+                // Counter Brake-Check: If player slams brakes, cops peel outward to shoulders and brake
+                let brakeCheckAvoidOffset = 0;
+                if (tacticalAI.isPlayerBrakeChecking && distZToPlayer < 0 && absDistZ < 30) {
+                    brakeCheckAvoidOffset = Math.sign(cop.pos.x - car.pos.x || cop.side) * 6.5;
+                }
+
+                let targetX = car.pos.x;
+                let targetZ = car.pos.z;
+                let targetSpeedZ = playerSpeedZ;
+
+                const tacticalSlot = idx % 4;
+
+                if (cop.isRhino) {
+                    // SWAT Heavy Rhino AI: Relentless Battering Ram
+                    targetX = car.pos.x;
+                    if (distZToPlayer > 5.0) {
+                        // Ahead of player: Reverse ram or severe roadblock brake-check
+                        targetSpeedZ = Math.max(15.0, playerSpeedZ * 0.68);
+                    } else {
+                        // Behind player: Heavy ram charge
+                        targetSpeedZ = playerSpeedZ + 10.0;
+                    }
+                } else if (tacticalAI.squadTactic === 'BOX_IN') {
+                    // TACTIC: THE ROLLING BOX-IN (Moving 4-Car Police Cage)
+                    if (tacticalSlot === 0) {
+                        // Front Blocker: Pulls ahead and restricts player speed
+                        targetX = car.pos.x;
+                        targetZ = car.pos.z + 5.0;
+                        targetSpeedZ = (cop.pos.z > car.pos.z + 3.0) ? (playerSpeedZ * 0.94) : (playerSpeedZ + 11.0);
+                    } else if (tacticalSlot === 1) {
+                        // Left Wing Pin: Traps player on the left side
+                        targetX = car.pos.x - 2.1;
+                        targetZ = car.pos.z + 0.2;
+                        targetSpeedZ = playerSpeedZ + (absDistZ > 2.0 ? 5.0 : 0);
+                    } else if (tacticalSlot === 2) {
+                        // Right Wing Pin: Traps player on the right side
+                        targetX = car.pos.x + 2.1;
+                        targetZ = car.pos.z + 0.2;
+                        targetSpeedZ = playerSpeedZ + (absDistZ > 2.0 ? 5.0 : 0);
+                    } else {
+                        // Rear Tail: Pressure from behind
+                        targetX = car.pos.x;
+                        targetZ = car.pos.z - 3.5;
+                        targetSpeedZ = playerSpeedZ + 4.5;
+                    }
+                } else if (tacticalAI.squadTactic === 'PINCER') {
+                    // TACTIC: PINCER CRUSH (Synchronized hydraulic squeeze)
+                    const pincerSide = (tacticalSlot % 2 === 0 ? -1 : 1);
+                    const isAlongside = (absDistZ < 3.8);
+                    targetX = isAlongside ? (car.pos.x + pincerSide * 0.5) : (predictedPlayerX + pincerSide * 2.6);
+                    targetZ = car.pos.z;
+                    targetSpeedZ = playerSpeedZ + (absDistZ > 3.0 ? 8.0 : 2.5);
+                } else if (tacticalAI.squadTactic === 'PREDICTIVE_INTERCEPT') {
+                    // TACTIC: PREDICTIVE LINE CUTTING (Intercepting future route)
+                    targetX = predictedPlayerX + (cop.side * 0.8);
+                    targetZ = car.pos.z + (distZToPlayer > 0 ? 0 : 4.0);
+                    targetSpeedZ = playerSpeedZ + 8.5;
+                } else if (tacticalAI.squadTactic === 'FLANK_WALL_PIN') {
+                    // TACTIC: WALL GRIND (Pinning player into nearest barrier)
+                    const wallDir = Math.sign(car.pos.x) || 1; // 1 = right wall, -1 = left wall
+                    targetX = car.pos.x - (wallDir * 1.9); // cop pushes from inside toward guardrail!
+                    targetZ = car.pos.z;
+                    targetSpeedZ = playerSpeedZ + 4.5;
+                } else {
+                    // TACTIC: ADVANCED PURSUIT & P.I.T.
+                    if (tacticalSlot === 0) {
+                        targetX = absDistZ < 3.0 ? car.pos.x : (predictedPlayerX + cop.side * 2.0);
+                        targetZ = car.pos.z - 1.2;
+                        targetSpeedZ = playerSpeedZ + 6.5;
+                    } else {
+                        targetX = predictedPlayerX;
+                        targetZ = car.pos.z;
+                        targetSpeedZ = playerSpeedZ + 5.0;
+                    }
+                }
+
+                // If player is brake-checking, peel outward to evade
+                if (brakeCheckAvoidOffset !== 0) {
+                    targetX += brakeCheckAvoidOffset;
+                    targetSpeedZ = Math.min(targetSpeedZ, playerSpeedZ * 0.80);
+                }
+
+                // Rubber-band catch-up if far behind
+                if (cop.pos.z < car.pos.z - 15) {
+                    targetSpeedZ = Math.max(targetSpeedZ, playerSpeedZ + 14.0);
+                }
+
+                const speedDiff = targetSpeedZ - cop.velZ;
+                cop.velZ += Math.sign(speedDiff) * Math.min(Math.abs(speedDiff), 38.0 * dt);
+
+                const xDiff = targetX - cop.pos.x;
+                cop.velX = Math.sign(xDiff) * Math.min(Math.abs(xDiff) * 4.4, 28.0);
+
+                cop.pos.z += cop.velZ * dt;
+                cop.pos.x += cop.velX * dt;
+
+                if (cop.pos.x > 21.5) { cop.pos.x = 21.5; cop.velX *= -0.5; }
+                if (cop.pos.x < -21.5) { cop.pos.x = -21.5; cop.velX *= -0.5; }
+
+                const targetYaw = Math.atan2(cop.velX, Math.max(10.0, cop.velZ));
+                cop.yaw += (targetYaw - cop.yaw) * Math.min(1.0, 11.0 * dt);
+                cop.mesh.group.rotation.y = cop.yaw;
+                cop.mesh.group.position.copy(cop.pos);
+
+                // --- VEHICLE-TO-VEHICLE COLLISION DYNAMICS ---
+                const dx = playerGroup.position.x - cop.pos.x;
+                const dz = playerGroup.position.z - cop.pos.z;
+                const dist = Math.sqrt(dx * dx + dz * dz);
+                const collisionRadius = cop.isRhino ? 4.5 : 3.8;
+
+                if (dist < collisionRadius && dist > 0.05) {
+                    const overlap = collisionRadius - dist;
+                    const nx = dx / dist; // Vector pointing from cop to player
+                    const nz = dz / dist;
+
+                    cop.pos.x -= nx * overlap * 0.55;
+                    cop.pos.z -= nz * overlap * 0.55;
+                    playerGroup.position.x += nx * overlap * 0.45;
+                    car.pos.x = playerGroup.position.x;
+
+                    const playerSpeed = Math.abs(car.speedKmh);
+
+                    // TAKEDOWN CONDITIONS (Fixed: NEVER trigger on normal turning / contact!)
+                    // 1) Explicit Nitro Ram: Player holds Shift (Nitro) at high speed (> 85 km/h) into the cop!
+                    //    Rhino requires > 140 km/h with Nitro!
+                    // 2) OR Cop's health reached 0 from multiple physical slams!
+                    const isNitroRam = car.isNitroBoosting && playerSpeed > 85 && (!cop.isRhino || playerSpeed > 140);
+                    const isHealthDepleted = cop.health <= 0;
+                    const isTakedown = isNitroRam || isHealthDepleted;
+
+                    if (isTakedown) {
+                        cop.isWrecked = true;
+                        cop.wreckTimer = 4.0;
+                        cop.pos.y = 0.15;
+
+                        // Realistic crash skid & tumble along the road (NO launching to outer space!)
+                        const pushDirX = (dx < 0 ? 1 : -1);
+                        cop.wreckVelX = pushDirX * (16.0 + Math.random() * 8.0);
+                        cop.wreckVelZ = Math.max(15.0, cop.velZ * 0.45);
+                        cop.wreckVelY = 2.5 + Math.random() * 1.5; // low hop (max 1.5m), NOT 100m into sky!
+
+                        cop.yawAngle = cop.yaw;
+                        cop.rollAngle = 0;
+                        cop.pitchAngle = 0;
+                        cop.yawRate = (Math.random() > 0.5 ? 1 : -1) * (7.0 + Math.random() * 5.0);
+                        cop.rollRate = (Math.random() > 0.5 ? 1 : -1) * (6.0 + Math.random() * 4.0);
+                        cop.pitchRate = (Math.random() - 0.5) * 3.5;
+
+                        // Balanced rewards: rewarding repairs on takedowns!
+                        car.health = Math.min(100, car.health + (cop.isRhino ? 15 : 8));
+                        car.nitro = Math.min(100, car.nitro + 45);
+                        car.bountyScore += cop.isRhino ? 10000 : 4000;
+                        car.copsWrecked = (car.copsWrecked || 0) + 1;
+
+                        playSfx('crash');
+                        showTakedown(
+                            cop.isRhino ? "🦏 SWAT RHINO TAKEDOWN!" : "💥 POLİS TAKEDOWN!",
+                            cop.isRhino ? "+10,000 BOUNTY & +%15 TAMİR" : "+4,000 BOUNTY & +%8 TAMİR"
+                        );
+                        showRadioMsg(cop.isRhino ? "💥 MERKEZ: RHINO TANKI İMHA EDİLDİ!" : "💥 MEMUR: ARAÇ AĞIR DARBE ALDI, KONTROLDEN ÇIKTI!");
+                        cameraShake = 0.9;
+                    } else {
+                        // --- REAL COP COMBAT & DAMAGE TO PLAYER ---
+                        cop.health -= 25; // cop takes damage from contact
+                        playSfx('crash');
+
+                        // Severe physical impact on player car
+                        if (cop.role === 0 && dz > 0.3) {
+                            // PIT Maneuver: violent fishtail
+                            car.yawRate += cop.side * 5.5;
+                            car.vel.x += cop.side * 6.5;
+                            showRadioMsg("🚨 BİRİM: P.I.T. MANEVRASI UYGULANDI!");
+                        } else if (cop.role === 1) {
+                            // Pincer / wall grind
+                            car.vel.x += cop.side * 5.0;
+                            showRadioMsg("🚨 BİRİM: ŞÜPHELİYİ BARİYERE SIKIŞTIRIYORUM!");
+                        } else if (cop.role === 3) {
+                            // SWAT Rhino heavy ram
+                            car.vel.x += nx * 8.5;
+                            car.vel.z *= 0.82;
+                            showRadioMsg("🦏 RHINO: ŞÜPHELİYE AĞIR ÇARPIŞMA UYGULANDI!");
+                        } else {
+                            car.vel.x += nx * 4.0;
+                            car.vel.z *= 0.92;
+                        }
+
+                        // DEAL BALANCED ARCADE DAMAGE TO PLAYER
+                        if (car.damageCooldown <= 0) {
+                            // Interceptors deal 4-7 HP, SWAT Rhino deals 10-14 HP (Balanced sweet-spot!)
+                            const dmg = cop.isRhino ? Math.round(10 + Math.random() * 4) : Math.round(4 + Math.random() * 3);
+                            car.health = Math.max(0, car.health - dmg);
+                            car.damageCooldown = 0.75; // 0.75s window gives breathing room when surrounded
+                            car.lastHitTimer = 0;
+                            triggerDamageFlash();
+                            cameraShake = cop.isRhino ? 1.1 : 0.6;
+
+                            showRadioMsg(cop.isRhino ? `🚨 RHINO DARBESİ: -%${dmg} HASAR!` : `🚨 POLİS ÇARPMASI: -%${dmg} HASAR!`);
+
+                            if (car.health <= 0) {
+                                triggerGameOver("BUSTED - ARACINIZ PERT OLDU!");
+                            }
+                        }
+                    }
+                }
+
+                // Cop-to-Cop Separation
+                for (let j = idx + 1; j < policeDirector.activeCops.length; j++) {
+                    const other = policeDirector.activeCops[j];
+                    if (other.isWrecked) continue;
+                    const d = cop.pos.distanceTo(other.pos);
+                    if (d < 4.0 && d > 0.01) {
+                        const push = new THREE.Vector3().subVectors(cop.pos, other.pos).normalize().multiplyScalar((4.0 - d) * 0.5);
+                        cop.pos.add(push);
+                        other.pos.sub(push);
+                    }
+                }
+
+                // EMP Weapon Targeting
+                if (cop.hasEMP && !cop.isWrecked) {
+                    cop.empCooldown -= dt;
+                    const isBehindPlayer = (cop.pos.z < car.pos.z) && (dist < 52 && dist > 10);
+
+                    if (isBehindPlayer && cop.empCooldown <= 0) {
+                        currentThreat = cop;
+                    }
+                }
+
+                // Thermite Bomb Traps
+                if (cop.hasThermite && !cop.isWrecked) {
+                    cop.thermiteCooldown -= dt;
+                    if (cop.thermiteCooldown <= 0 && dist < 42) {
+                        const dropPos = new THREE.Vector3(
+                            car.pos.x + (Math.random() - 0.5) * 8,
+                            0.06,
+                            car.pos.z + (Math.random() * 20 + 22)
+                        );
+                        spawnThermiteTrap(dropPos);
+                        cop.thermiteCooldown = 15.0;
+                    }
+                }
+            });
+
+            // Handle EMP Lock-on Beam & Threat UI
+            const threatBox = document.getElementById('threat-alert-box');
+            const threatFill = document.getElementById('threat-fill');
+
+            if (currentThreat) {
+                policeDirector.empLockProgress += dt / 2.5;
+                policeDirector.empLaserMesh.visible = true;
+
+                const start = currentThreat.pos.clone().add(new THREE.Vector3(0, 0.7, 1.8));
+                const end = playerGroup.position.clone().add(new THREE.Vector3(0, 0.6, -1.8));
+                const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+                policeDirector.empLaserMesh.position.copy(mid);
+                policeDirector.empLaserMesh.scale.set(1, 1, start.distanceTo(end));
+                policeDirector.empLaserMesh.lookAt(end);
+
+                threatBox.style.display = 'flex';
+                const pct = Math.min(100, Math.floor(policeDirector.empLockProgress * 100));
+                threatFill.style.width = `${pct}%`;
+
+                if (Math.floor(Date.now() / 240) % 2 === 0) playSfx('emp_beep');
+
+                if (policeDirector.empLockProgress >= 1.0) {
+                    triggerEMPShockwave();
+                    car.health = Math.max(0, car.health - 6);
+                    if (car.health <= 0) {
+                        triggerGameOver("BUSTED - EMP VE MOTOR KİLİTLENMESİ!");
+                    }
+                    currentThreat.empCooldown = 18.0;
+                    policeDirector.empLockProgress = 0;
+                    policeDirector.empLaserMesh.visible = false;
+                    threatBox.style.display = 'none';
+                }
+            } else {
+                policeDirector.empLockProgress = Math.max(0, policeDirector.empLockProgress - dt * 2.0);
+                policeDirector.empLaserMesh.visible = false;
+                threatBox.style.display = 'none';
+            }
+
+            for (let i = policeDirector.thermites.length - 1; i >= 0; i--) {
+                const t = policeDirector.thermites[i];
+                t.lifetime -= dt;
+                t.mesh.scale.set(1 + Math.sin(Date.now() * 0.01) * 0.08, 1, 1 + Math.cos(Date.now() * 0.01) * 0.08);
+
+                if (t.lifetime <= 0) {
+                    scene.remove(t.mesh);
+                    policeDirector.thermites.splice(i, 1);
+                } else {
+                    if (playerGroup.position.distanceTo(t.mesh.position) < 6.5) {
+                        car.health = Math.max(0, car.health - 7.0 * dt);
+                        car.vel.x += (Math.random() - 0.5) * 5.0 * dt;
+                        car.lastHitTimer = 0;
+                        triggerDamageFlash();
+                        if (car.health <= 0) {
+                            triggerGameOver("BUSTED - ARAÇ TERMİTTE YANDI!");
+                        }
+                    }
+                }
+            }
+        }
+
+        function spawnThermiteTrap(pos) {
+            const trapGeo = new THREE.CircleGeometry(6.5, 24);
+            const trapMat = new THREE.MeshBasicMaterial({ color: 0xff3300, side: THREE.DoubleSide });
+            const mesh = new THREE.Mesh(trapGeo, trapMat);
+            mesh.rotation.x = -Math.PI / 2;
+            mesh.position.set(pos.x, 0.06, pos.z);
+            scene.add(mesh);
+            policeDirector.thermites.push({ mesh, lifetime: 12.0 });
+            showRadioMsg("🔥 DİKKAT: POLİS ÖNÜNE KOR HALİNDE 2500°C TERMİT TUZAĞI ATTI!");
+        }
+
+        // --- 10. CAMERA VIEWS ---
+        function updateCamera() {
+            if (currentGameState === GAME_STATE.MENU) {
+                const angle = Date.now() * 0.0006;
+                const radius = 8.5;
+                camera.position.set(Math.sin(angle) * radius, 2.4, Math.cos(angle) * radius);
+                camera.lookAt(0, 0.9, 0);
+                turntable.rotation.z += 0.003;
+                return;
+            }
+
+            if (cameraMode === 0) {
+                const speedShake = (Math.abs(car.speedKmh) / 450.0) * (Math.random() - 0.5) * 0.08;
+                const offset = new THREE.Vector3(
+                    -Math.sin(car.yaw) * 8.5 + speedShake,
+                    3.6,
+                    -Math.cos(car.yaw) * 8.5
+                );
+                const targetPos = playerGroup.position.clone().add(offset);
+                camera.position.lerp(targetPos, 0.18);
+                camera.lookAt(playerGroup.position.x, playerGroup.position.y + 1.2, playerGroup.position.z);
+                cockpitGroup.visible = false;
+            } else if (cameraMode === 1) {
+                cockpitGroup.visible = true;
+                const eyePos = playerGroup.position.clone().add(new THREE.Vector3(
+                    Math.sin(car.yaw) * (-0.1) + Math.cos(car.yaw) * (-0.35),
+                    1.22,
+                    Math.cos(car.yaw) * (-0.1) - Math.sin(car.yaw) * (-0.35)
+                ));
+                camera.position.copy(eyePos);
+                camera.lookAt(
+                    eyePos.x + Math.sin(car.yaw) * 15,
+                    eyePos.y - 0.05,
+                    eyePos.z + Math.cos(car.yaw) * 15
+                );
+                steeringWheel.rotation.z = -car.steerAngle * 2.2;
+            }
+
+            const targetFov = 65 + Math.min(24, (Math.abs(car.speedKmh) / 500) * 18 + (car.isNitroBoosting ? 6 : 0));
+            camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.08);
+            camera.updateProjectionMatrix();
+
+            // Dynamic moon & road lighting follows player along infinite highway
+            if (currentGameState === GAME_STATE.PLAYING) {
+                moonLight.position.set(car.pos.x + 70, 160, car.pos.z - 40);
+                moonLight.target.position.set(car.pos.x, 0, car.pos.z);
+                roadFillLight.position.set(car.pos.x - 60, 90, car.pos.z + 60);
+                roadFillLight.target.position.set(car.pos.x, 0, car.pos.z);
+            }
+        }
+
+        // --- 11. HUD REFRESH LOOP ---
+        function updateHUD() {
+            if (currentGameState !== GAME_STATE.PLAYING) return;
+
+            const cfg = CAR_ROSTER[selectedCarIdx];
+            const maxRpmRef = (cfg && cfg.isTorpilli) ? 9800 : 8800;
+
+            document.getElementById('speed-display').textContent = Math.round(Math.abs(car.speedKmh));
+            document.getElementById('rpm-display').textContent = `${Math.round(car.rpm)} RPM`;
+            document.getElementById('rpm-bar').style.width = `${(car.rpm / maxRpmRef) * 100}%`;
+
+            const gearEl = document.getElementById('gear-display');
+            gearEl.textContent = car.gear;
+            if (car.gear === 'R') {
+                gearEl.classList.add('reverse');
+            } else {
+                gearEl.classList.remove('reverse');
+            }
+
+            document.getElementById('nitro-bar').style.width = `${car.nitro}%`;
+
+            const hpVal = Math.round(car.health);
+            document.getElementById('health-val').textContent = `${hpVal}%`;
+            document.getElementById('health-bar').style.width = `${hpVal}%`;
+
+            const m = Math.floor(policeDirector.timeElapsed / 60);
+            const s = Math.floor(policeDirector.timeElapsed % 60);
+            document.getElementById('time-val').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+            const nextHeatRemaining = 300 - (policeDirector.timeElapsed % 300);
+            const nm = Math.floor(nextHeatRemaining / 60);
+            const ns = Math.floor(nextHeatRemaining % 60);
+            document.getElementById('next-heat-val').textContent = `${String(nm).padStart(2,'0')}:${String(ns).padStart(2,'0')}`;
+
+            const tacticEl = document.getElementById('ai-tactic-val');
+            if (tacticEl) {
+                const tacticLabels = {
+                    'BOX_IN': '🔒 KUTULAMA (BOX-IN)',
+                    'PINCER': '⚡ KISKAÇ BASKISI (PINCER)',
+                    'PREDICTIVE_INTERCEPT': '🎯 ÖNGÖRÜLÜ KESME (LEAD)',
+                    'FLANK_WALL_PIN': '🚧 BARİYERE KİLİTLEME',
+                    'RHINO_RAM': '🦏 KOÇBAŞI HÜCUMU'
+                };
+                tacticEl.textContent = tacticLabels[tacticalAI.squadTactic] || 'SERBEST TAKİP';
+            }
+        }
+
+        // --- 12. MAIN ANIMATION LOOP ---
+        let lastTime = performance.now();
+        function animate(now) {
+            requestAnimationFrame(animate);
+            const dt = Math.min(0.05, (now - lastTime) / 1000);
+            lastTime = now;
+
+            if (currentGameState === GAME_STATE.PLAYING) {
+                updatePhysics(dt);
+                updatePolice(dt);
+                updateCamera();
+                updateHUD();
+            } else if (currentGameState === GAME_STATE.BUSTED) {
+                // Dramatic 360-degree slow motion orbital camera around wrecked player car
+                const orbitTime = Date.now() * 0.0008;
+                camera.position.x = playerGroup.position.x + Math.sin(orbitTime) * 8.0;
+                camera.position.y = playerGroup.position.y + 2.8;
+                camera.position.z = playerGroup.position.z + Math.cos(orbitTime) * 8.0;
+                camera.lookAt(playerGroup.position.x, playerGroup.position.y + 0.6, playerGroup.position.z);
+            }
+
+            renderer.render(scene, camera);
+        }
+        requestAnimationFrame(animate);
+
+        // --- 13. UI NAVIGATION & GAME OVER HANDLERS ---
+        function triggerGameOver(reason) {
+            if (currentGameState === GAME_STATE.BUSTED) return;
+            currentGameState = GAME_STATE.BUSTED;
+
+            playSfx('crash');
+            showRadioMsg("💀 MERKEZ: TÜM BİRİMLER, ŞÜPHELİ YAKALANDI (BUSTED)!");
+
+            const totalSec = Math.floor(policeDirector.timeElapsed);
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            const timeStr = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            const bountyEl = document.getElementById('busted-bounty');
+            if (bountyEl) bountyEl.textContent = (car.bountyScore || 0).toLocaleString();
+
+            const copsEl = document.getElementById('busted-cops');
+            if (copsEl) copsEl.textContent = (car.copsWrecked || 0).toString();
+
+            const timeEl = document.getElementById('busted-time');
+            if (timeEl) timeEl.textContent = timeStr;
+
+            const ov = document.getElementById('busted-overlay');
+            if (ov) ov.style.display = 'flex';
+        }
+
+        window.retryPursuit = function() {
+            const ov = document.getElementById('busted-overlay');
+            if (ov) ov.style.display = 'none';
+            document.getElementById('ingame-hud').style.display = 'block';
+
+            currentGameState = GAME_STATE.PLAYING;
+            car.pos.set(0, 0, 0);
+            car.vel.set(0, 0, 20);
+            car.yaw = 0;
+            car.gear = 1;
+            car.health = 100;
+            car.nitro = 100;
+            car.damageCooldown = 0;
+            car.lastHitTimer = 0;
+            car.bountyScore = 0;
+            car.copsWrecked = 0;
+            policeDirector.timeElapsed = 0;
+
+            playerGroup.position.set(0, 0, 0);
+            playerGroup.rotation.set(0, 0, 0);
+
+            spawnPoliceFleet(policeDirector.heatLevel || 1);
+        };
+
+        window.startGamePursuit = function() {
+            startGamePursuitWithHeat(policeDirector.heatLevel || 1);
+        };
+
+        window.startGamePursuitWithHeat = function(heat) {
+            initAudio();
+            currentGameState = GAME_STATE.PLAYING;
+            document.getElementById('main-menu-overlay').style.display = 'none';
+            document.getElementById('ingame-hud').style.display = 'block';
+
+            const ov = document.getElementById('busted-overlay');
+            if (ov) ov.style.display = 'none';
+
+            car.pos.set(0, 0, 0);
+            car.vel.set(0, 0, 20);
+            car.yaw = 0;
+            car.gear = 1;
+            car.health = 100;
+            car.nitro = 100;
+            car.damageCooldown = 0;
+            car.lastHitTimer = 0;
+            car.bountyScore = 0;
+            car.copsWrecked = 0;
+
+            setInstantHeat(heat);
+        };
+
+        window.returnToMainMenu = function() {
+            currentGameState = GAME_STATE.MENU;
+            const ov = document.getElementById('busted-overlay');
+            if (ov) ov.style.display = 'none';
+
+            document.getElementById('main-menu-overlay').style.display = 'flex';
+            document.getElementById('ingame-hud').style.display = 'none';
+            playerGroup.position.set(0, 0, 0);
+            playerGroup.rotation.y = 0;
+            policeDirector.activeCops.forEach(c => scene.remove(c.mesh.group));
+            policeDirector.activeCops = [];
+            if (policeDirector.empLaserMesh) policeDirector.empLaserMesh.visible = false;
+        };
+    </script>
+</body>
+</html>
