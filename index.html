@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             box-sizing: border-box;
             user-select: none;
         }
+
         body {
             background-color: #040810;
             color: #fff;
@@ -19,6 +21,7 @@
             width: 100vw;
             height: 100vh;
         }
+
         #webgl-canvas {
             position: absolute;
             top: 0;
@@ -41,6 +44,7 @@
             pointer-events: auto;
             transition: opacity 0.5s ease;
         }
+
         .menu-sidebar {
             width: 500px;
             height: 100%;
@@ -51,11 +55,13 @@
             z-index: 105;
             overflow-y: auto;
         }
+
         .nfs-logo-wrap {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
+
         .nfs-sub {
             font-size: 0.8rem;
             font-weight: 800;
@@ -63,6 +69,7 @@
             color: #ef4444;
             text-transform: uppercase;
         }
+
         .nfs-title {
             font-size: 3.0rem;
             font-weight: 900;
@@ -74,6 +81,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
         }
+
         .nfs-edition {
             font-size: 1.05rem;
             font-weight: 900;
@@ -90,6 +98,7 @@
             gap: 10px;
             margin: 18px 0;
         }
+
         .menu-btn {
             background: rgba(15, 23, 42, 0.75);
             color: #f1f5f9;
@@ -108,6 +117,7 @@
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             backdrop-filter: blur(10px);
         }
+
         .menu-btn::before {
             content: '';
             position: absolute;
@@ -119,32 +129,40 @@
             transform: scaleY(0);
             transition: transform 0.2s ease;
         }
-        .menu-btn:hover, .menu-btn.active {
+
+        .menu-btn:hover,
+        .menu-btn.active {
             background: linear-gradient(90deg, rgba(239, 68, 68, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
             border-color: #ef4444;
             transform: translateX(10px);
             color: #fff;
             box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
         }
-        .menu-btn:hover::before, .menu-btn.active::before {
+
+        .menu-btn:hover::before,
+        .menu-btn.active::before {
             transform: scaleY(1);
         }
+
         .menu-btn.primary {
             background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
             border-color: #f87171;
             color: #ffffff;
             box-shadow: 0 8px 30px rgba(239, 68, 68, 0.5);
         }
+
         .menu-btn.primary:hover {
             transform: translateX(12px) scale(1.02);
             box-shadow: 0 10px 40px rgba(239, 68, 68, 0.7);
         }
+
         .menu-btn.heat10 {
             background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
             border-color: #fca5a5;
             color: #ffffff;
             box-shadow: 0 6px 25px rgba(220, 38, 38, 0.5);
         }
+
         .menu-btn.upload {
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(15, 23, 42, 0.85) 100%);
             border-color: #38bdf8;
@@ -160,6 +178,7 @@
             backdrop-filter: blur(12px);
             margin-top: 4px;
         }
+
         .car-name-title {
             font-size: 1.6rem;
             font-weight: 900;
@@ -167,6 +186,7 @@
             letter-spacing: 1px;
             color: #fff;
         }
+
         .car-class-badge {
             display: inline-block;
             background: #ef4444;
@@ -178,17 +198,20 @@
             letter-spacing: 1.5px;
             margin-top: 3px;
         }
+
         .stat-bar-group {
             display: flex;
             flex-direction: column;
             gap: 7px;
             margin-top: 10px;
         }
+
         .stat-item {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
+
         .stat-header {
             display: flex;
             justify-content: space-between;
@@ -197,24 +220,28 @@
             color: #94a3b8;
             text-transform: uppercase;
         }
+
         .stat-track {
             height: 6px;
             background: #1e293b;
             border-radius: 3px;
             overflow: hidden;
         }
+
         .stat-fill {
             height: 100%;
             background: linear-gradient(90deg, #38bdf8 0%, #0284c7 100%);
             border-radius: 3px;
             transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .car-nav-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 12px;
         }
+
         .carousel-btn {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
@@ -226,6 +253,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
+
         .carousel-btn:hover {
             background: #ef4444;
             border-color: #ef4444;
@@ -259,6 +287,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
         }
+
         .heat-badge {
             display: flex;
             align-items: center;
@@ -269,11 +298,13 @@
             color: #ef4444;
             letter-spacing: 2px;
         }
+
         .hud-stat {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .stat-label {
             font-size: 0.65rem;
             color: #94a3b8;
@@ -281,6 +312,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .stat-val {
             font-size: 0.95rem;
             color: #fff;
@@ -302,6 +334,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(8px);
         }
+
         .heat-btn {
             background: rgba(30, 41, 59, 0.85);
             color: #cbd5e1;
@@ -313,18 +346,21 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
+
         .heat-btn:hover {
             background: #0284c7;
             color: #fff;
             border-color: #38bdf8;
             transform: scale(1.05);
         }
+
         .heat-btn.active {
             background: #ef4444;
             color: #fff;
             border-color: #f87171;
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
         }
+
         .heat-btn.max {
             background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
             color: #fff;
@@ -350,9 +386,17 @@
             box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
             animation: pulse-border 1.5s infinite;
         }
+
         @keyframes pulse-border {
-            0%, 100% { border-color: #ef4444; }
-            50% { border-color: #f87171; }
+
+            0%,
+            100% {
+                border-color: #ef4444;
+            }
+
+            50% {
+                border-color: #f87171;
+            }
         }
 
         /* Tactical Threat Alert Overlay (EMP Lock & Thermite) */
@@ -372,10 +416,17 @@
             box-shadow: 0 0 35px rgba(239, 68, 68, 0.8);
             animation: threat-pulse 0.4s infinite alternate;
         }
+
         @keyframes threat-pulse {
-            from { transform: translateX(-50%) scale(1.0); }
-            to { transform: translateX(-50%) scale(1.04); }
+            from {
+                transform: translateX(-50%) scale(1.0);
+            }
+
+            to {
+                transform: translateX(-50%) scale(1.04);
+            }
         }
+
         .threat-title {
             font-size: 0.95rem;
             font-weight: 900;
@@ -383,6 +434,7 @@
             letter-spacing: 1px;
             text-transform: uppercase;
         }
+
         .threat-meter-bg {
             width: 220px;
             height: 8px;
@@ -391,6 +443,7 @@
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
+
         .threat-meter-fill {
             height: 100%;
             width: 0%;
@@ -413,6 +466,7 @@
             backdrop-filter: blur(8px);
             pointer-events: auto;
         }
+
         .key-tag {
             background: #1e293b;
             color: #38bdf8;
@@ -421,6 +475,7 @@
             border-radius: 4px;
             border: 1px solid #334155;
         }
+
         .menu-return-btn {
             margin-top: 12px;
             width: 100%;
@@ -434,6 +489,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .menu-return-btn:hover {
             background: #ef4444;
         }
@@ -448,11 +504,13 @@
             align-items: flex-end;
             gap: 10px;
         }
+
         .speedo-wrap {
             display: flex;
             align-items: baseline;
             gap: 8px;
         }
+
         .speed-val {
             font-size: 5.5rem;
             font-weight: 900;
@@ -462,12 +520,14 @@
             text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
             letter-spacing: -2px;
         }
+
         .speed-unit {
             font-size: 1.3rem;
             font-weight: 900;
             color: #38bdf8;
             font-style: italic;
         }
+
         .rpm-bar-bg {
             width: 290px;
             height: 10px;
@@ -476,12 +536,14 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
         }
+
         .rpm-bar-fill {
             height: 100%;
             width: 15%;
             background: linear-gradient(90deg, #38bdf8 0%, #eab308 70%, #ef4444 95%);
             transition: width 0.05s ease-out;
         }
+
         .gear-nitro-row {
             display: flex;
             align-items: center;
@@ -489,6 +551,7 @@
             width: 290px;
             justify-content: space-between;
         }
+
         .gear-badge {
             background: #ef4444;
             color: #fff;
@@ -500,23 +563,27 @@
             min-width: 44px;
             text-align: center;
         }
+
         .gear-badge.reverse {
             background: #f59e0b;
             color: #000;
             box-shadow: 0 0 15px #f59e0b;
         }
+
         .nitro-bar-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 3px;
         }
+
         .nitro-label {
             font-size: 0.65rem;
             font-weight: 800;
             color: #38bdf8;
             letter-spacing: 1px;
         }
+
         .nitro-track {
             height: 8px;
             background: #0f172a;
@@ -524,6 +591,7 @@
             overflow: hidden;
             border: 1px solid rgba(56, 189, 248, 0.3);
         }
+
         .nitro-fill {
             height: 100%;
             width: 100%;
@@ -540,6 +608,7 @@
             gap: 3px;
             margin-top: 4px;
         }
+
         .health-label-row {
             display: flex;
             justify-content: space-between;
@@ -548,6 +617,7 @@
             color: #10b981;
             letter-spacing: 1px;
         }
+
         .health-bar-bg {
             height: 8px;
             background: #0f172a;
@@ -555,6 +625,7 @@
             overflow: hidden;
             border: 1px solid rgba(16, 185, 129, 0.4);
         }
+
         .health-bar-fill {
             height: 100%;
             width: 100%;
@@ -576,10 +647,19 @@
             mix-blend-mode: screen;
             animation: emp-shake 0.05s infinite;
         }
+
         @keyframes emp-shake {
-            0% { transform: translate(3px, 1px); }
-            50% { transform: translate(-3px, -2px); }
-            100% { transform: translate(1px, 2px); }
+            0% {
+                transform: translate(3px, 1px);
+            }
+
+            50% {
+                transform: translate(-3px, -2px);
+            }
+
+            100% {
+                transform: translate(1px, 2px);
+            }
         }
 
         /* Takedown Banner Overlay */
@@ -593,26 +673,40 @@
             pointer-events: none;
             text-align: center;
         }
+
         .takedown-title {
             font-size: 2.8rem;
             font-weight: 900;
             font-style: italic;
             color: #fbbf24;
-            text-shadow: 0 0 35px #f59e0b, 0 4px 15px rgba(0,0,0,0.9);
+            text-shadow: 0 0 35px #f59e0b, 0 4px 15px rgba(0, 0, 0, 0.9);
             letter-spacing: 3px;
             text-transform: uppercase;
             animation: takedown-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .takedown-sub {
             font-size: 1.3rem;
             font-weight: 800;
             color: #10b981;
             letter-spacing: 2px;
         }
+
         @keyframes takedown-pop {
-            0% { transform: scale(0.4); opacity: 0; }
-            80% { transform: scale(1.15); opacity: 1; }
-            100% { transform: scale(1.0); opacity: 1; }
+            0% {
+                transform: scale(0.4);
+                opacity: 0;
+            }
+
+            80% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.0);
+                opacity: 1;
+            }
         }
 
         /* Red Screen Damage Flash */
@@ -673,6 +767,7 @@
             text-align: center;
             backdrop-filter: blur(12px);
         }
+
         .busted-main-title {
             font-size: 5.5rem;
             font-weight: 900;
@@ -681,9 +776,15 @@
             letter-spacing: 6px;
             animation: busted-glow 0.8s infinite alternate;
         }
+
         @keyframes busted-glow {
-            from { text-shadow: 0 0 25px #ef4444, 0 4px 15px rgba(0,0,0,0.9); }
-            to { text-shadow: 0 0 60px #ff0000, 0 0 100px #ef4444, 0 4px 25px rgba(0,0,0,0.9); }
+            from {
+                text-shadow: 0 0 25px #ef4444, 0 4px 15px rgba(0, 0, 0, 0.9);
+            }
+
+            to {
+                text-shadow: 0 0 60px #ff0000, 0 0 100px #ef4444, 0 4px 25px rgba(0, 0, 0, 0.9);
+            }
         }
 
         /* Drag & Drop Overlay Notification */
@@ -708,6 +809,7 @@
         }
     </style>
 </head>
+
 <body>
     <canvas id="webgl-canvas"></canvas>
 
@@ -722,11 +824,13 @@
     <!-- === BUSTED / GAME OVER OVERLAY === -->
     <div id="busted-overlay">
         <div class="busted-main-title">🚨 BUSTED</div>
-        <div style="font-size:1.3rem; font-weight:800; color:#fca5a5; letter-spacing:3px; margin-top:-8px; text-transform:uppercase;">
+        <div
+            style="font-size:1.3rem; font-weight:800; color:#fca5a5; letter-spacing:3px; margin-top:-8px; text-transform:uppercase;">
             ARACINIZ PERT OLDU // ETKİSİZ HALE GETİRİLDİNİZ
         </div>
 
-        <div style="margin:28px 0; background:rgba(30,41,59,0.8); border:1px solid rgba(239,68,68,0.5); border-radius:12px; padding:20px 40px; display:flex; gap:36px; box-shadow:0 10px 30px rgba(0,0,0,0.7);">
+        <div
+            style="margin:28px 0; background:rgba(30,41,59,0.8); border:1px solid rgba(239,68,68,0.5); border-radius:12px; padding:20px 40px; display:flex; gap:36px; box-shadow:0 10px 30px rgba(0,0,0,0.7);">
             <div style="display:flex; flex-direction:column; align-items:center;">
                 <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">TOPLAM BOUNTY</span>
                 <span style="font-size:2rem; color:#fbbf24; font-weight:900;" id="busted-bounty">0</span>
@@ -744,10 +848,12 @@
         </div>
 
         <div style="display:flex; gap:16px;">
-            <button class="menu-btn primary" onclick="retryPursuit()" style="padding:14px 34px; font-size:1.05rem; cursor:pointer;">
+            <button class="menu-btn primary" onclick="retryPursuit()"
+                style="padding:14px 34px; font-size:1.05rem; cursor:pointer;">
                 🔄 TEKRAR DENE (RETRY)
             </button>
-            <button class="menu-btn" onclick="returnToMainMenu()" style="padding:14px 30px; font-size:1.05rem; background:#1e293b; color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px; cursor:pointer;">
+            <button class="menu-btn" onclick="returnToMainMenu()"
+                style="padding:14px 30px; font-size:1.05rem; background:#1e293b; color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px; cursor:pointer;">
                 🏠 GARAJA DÖN (GARAGE)
             </button>
         </div>
@@ -768,12 +874,15 @@
             </div>
 
             <div class="menu-nav">
-                <button class="menu-btn primary" onclick="startGamePursuitWithHeat(1)">▶ TAKİBE BAŞLA (START PURSUIT)</button>
-                <button class="menu-btn heat10" onclick="startGamePursuitWithHeat(10)">🚨 SEVİYE 10 KAOS MODU (20 POLİS & SİLAHLAR)</button>
+                <button class="menu-btn primary" onclick="startGamePursuitWithHeat(1)">▶ TAKİBE BAŞLA (START
+                    PURSUIT)</button>
+                <button class="menu-btn heat10" onclick="startGamePursuitWithHeat(10)">🚨 SEVİYE 10 KAOS MODU (20 POLİS
+                    & SİLAHLAR)</button>
                 <button class="menu-btn upload" onclick="document.getElementById('custom-model-input').click()">
                     📁 3D ARABA YÜKLE (.GLB / .OBJ)
                 </button>
-                <input type="file" id="custom-model-input" accept=".glb,.gltf,.obj" style="display:none" onchange="onCustomFileSelected(event)">
+                <input type="file" id="custom-model-input" accept=".glb,.gltf,.obj" style="display:none"
+                    onchange="onCustomFileSelected(event)">
                 <div style="font-size:0.72rem; color:#94a3b8; margin-top:-4px; padding-left:4px;">
                     💡 İpucu: Kendi 3D modelini doğrudan pencereye sürükleyip bırakabilirsin!
                 </div>
@@ -789,90 +898,132 @@
                     <div style="font-size:0.85rem; color:#38bdf8; font-weight:800;" id="menu-car-hp">585 HP</div>
                 </div>
 
-                <div style="position:relative; width:100%; height:130px; border-radius:8px; overflow:hidden; margin:8px 0 10px 0; border:1px solid rgba(56,189,248,0.4); box-shadow:0 4px 16px rgba(0,0,0,0.6);">
-                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/bmw_m3_gtr.jpg';" alt="Car Render" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
-                    <div style="position:absolute; bottom:6px; left:8px; background:rgba(0,0,0,0.75); padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; color:#38bdf8; letter-spacing:1px;">8K GERÇEK ARAÇ GÖRÜNTÜSÜ</div>
+                <div
+                    style="position:relative; width:100%; height:130px; border-radius:8px; overflow:hidden; margin:8px 0 10px 0; border:1px solid rgba(56,189,248,0.4); box-shadow:0 4px 16px rgba(0,0,0,0.6);">
+                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg"
+                        onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/bmw_m3_gtr.jpg';"
+                        alt="Car Render"
+                        style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
+                    <div
+                        style="position:absolute; bottom:6px; left:8px; background:rgba(0,0,0,0.75); padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; color:#38bdf8; letter-spacing:1px;">
+                        8K GERÇEK ARAÇ GÖRÜNTÜSÜ</div>
                 </div>
 
                 <div class="stat-bar-group">
                     <div class="stat-item">
                         <div class="stat-header"><span>Maksimum Hız</span><span id="stat-speed">348 KM/H</span></div>
-                        <div class="stat-track"><div class="stat-fill" id="fill-speed" style="width: 92%;"></div></div>
+                        <div class="stat-track">
+                            <div class="stat-fill" id="fill-speed" style="width: 92%;"></div>
+                        </div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-header"><span>Hızlanma (0-100)</span><span id="stat-accel">2.9 SN</span></div>
-                        <div class="stat-track"><div class="stat-fill" id="fill-accel" style="width: 95%;"></div></div>
+                        <div class="stat-track">
+                            <div class="stat-fill" id="fill-accel" style="width: 95%;"></div>
+                        </div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-header"><span>Yol Tutuş (Pacejka Drift)</span><span id="stat-handling">PRO SPEC</span></div>
-                        <div class="stat-track"><div class="stat-fill" id="fill-handling" style="width: 88%;"></div></div>
+                        <div class="stat-header"><span>Yol Tutuş (Pacejka Drift)</span><span id="stat-handling">PRO
+                                SPEC</span></div>
+                        <div class="stat-track">
+                            <div class="stat-fill" id="fill-handling" style="width: 88%;"></div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="car-nav-row">
                     <button class="carousel-btn" onclick="prevCar()">◀ Önceki</button>
-                    <span style="font-size:0.8rem; font-weight:700; color:#94a3b8;" id="car-index-indicator">1 / 5</span>
+                    <span style="font-size:0.8rem; font-weight:700; color:#94a3b8;" id="car-index-indicator">1 /
+                        5</span>
                     <button class="carousel-btn" onclick="nextCar()">Sonraki ▶</button>
                 </div>
             </div>
 
             <!-- FORZA PERFORMANCE & TUNING ATELIER -->
-            <div class="tuning-panel" style="margin-top:10px; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:12px; backdrop-filter:blur(8px);">
+            <div class="tuning-panel"
+                style="margin-top:10px; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:12px; backdrop-filter:blur(8px);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <span style="font-size:0.76rem; font-weight:900; color:#38bdf8; letter-spacing:1px;">🛠️ FORZA TUNING & MOTOR ATÖLYESİ</span>
-                    <span id="tuning-total-hp" style="font-size:0.75rem; font-weight:800; color:#10b981;">OEM SPEC</span>
+                    <span style="font-size:0.76rem; font-weight:900; color:#38bdf8; letter-spacing:1px;">🛠️ FORZA
+                        TUNING & MOTOR ATÖLYESİ</span>
+                    <span id="tuning-total-hp" style="font-size:0.75rem; font-weight:800; color:#10b981;">OEM
+                        SPEC</span>
                 </div>
 
                 <!-- Engine Swap Dropdown -->
                 <div style="margin-bottom:10px;">
-                    <div style="font-size:0.68rem; font-weight:700; color:#94a3b8; margin-bottom:4px;">MOTOR SWAP (MOTOR DEĞİŞTİRME)</div>
-                    <select id="engine-swap-select" onchange="onEngineSwapChanged(this.value)" style="width:100%; background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:7px 10px; font-size:0.8rem; font-weight:700; outline:none; cursor:pointer;">
+                    <div style="font-size:0.68rem; font-weight:700; color:#94a3b8; margin-bottom:4px;">MOTOR SWAP (MOTOR
+                        DEĞİŞTİRME)</div>
+                    <select id="engine-swap-select" onchange="onEngineSwapChanged(this.value)"
+                        style="width:100%; background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:7px 10px; font-size:0.8rem; font-weight:700; outline:none; cursor:pointer;">
                         <option value="stock">🏭 Fabrika Çıkışı (Stock Factory Spec)</option>
                         <option value="v8_twin_turbo">🌪️ 4.0L Twin-Turbo V8 (+240 HP / Yüksek Tork)</option>
                         <option value="v10_screamer">⚡ 5.2L V10 Naturally Aspirated (+380 HP / 9600 RPM)</option>
                         <option value="v12_hyper">🚀 6.5L Quad-Turbo Hyper V12 (+750 HP / 500 KM/H)</option>
                         <option value="ev_extreme">🔋 Dual-Motor Extreme EV (+450 HP / 0.8s 0-100 Roket)</option>
                     </select>
-                    <div id="engine-desc-label" style="font-size:0.65rem; color:#94a3b8; margin-top:3px; font-style:italic;">Orijinal fabrika motoru ve dengeli yarış konfigürasyonu.</div>
+                    <div id="engine-desc-label"
+                        style="font-size:0.65rem; color:#94a3b8; margin-top:3px; font-style:italic;">Orijinal fabrika
+                        motoru ve dengeli yarış konfigürasyonu.</div>
                 </div>
 
                 <!-- Handling & Tire Compound 3-Stage Slider -->
                 <div style="margin-bottom:8px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
-                        <span style="font-size:0.68rem; font-weight:700; color:#94a3b8;">YOL TUTUŞ & AĞIRLIK DAĞILIMI</span>
-                        <span id="handling-badge" style="font-size:0.68rem; font-weight:800; color:#f59e0b;">⚖️ DENGELİ SIMCADE</span>
+                        <span style="font-size:0.68rem; font-weight:700; color:#94a3b8;">YOL TUTUŞ & AĞIRLIK
+                            DAĞILIMI</span>
+                        <span id="handling-badge" style="font-size:0.68rem; font-weight:800; color:#f59e0b;">⚖️ DENGELİ
+                            SIMCADE</span>
                     </div>
-                    <input type="range" id="handling-slider" min="0" max="2" step="1" value="1" oninput="onHandlingSliderChanged(this.value)" style="width:100%; accent-color:#38bdf8; cursor:pointer;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.6rem; font-weight:800; color:#64748b; margin-top:1px;">
+                    <input type="range" id="handling-slider" min="0" max="2" step="1" value="1"
+                        oninput="onHandlingSliderChanged(this.value)"
+                        style="width:100%; accent-color:#38bdf8; cursor:pointer;">
+                    <div
+                        style="display:flex; justify-content:space-between; font-size:0.6rem; font-weight:800; color:#64748b; margin-top:1px;">
                         <span>🏁 TRACK GRIP</span>
                         <span>⚖️ SIMCADE</span>
                         <span>💨 PRO DRIFT</span>
                     </div>
-                    <div id="handling-desc-label" style="font-size:0.65rem; color:#94a3b8; margin-top:3px; font-style:italic;">%50 / %50 nötr denge. Keskin direksiyon tepkisi ve el freniyle kontrollü güç kayması.</div>
+                    <div id="handling-desc-label"
+                        style="font-size:0.65rem; color:#94a3b8; margin-top:3px; font-style:italic;">%50 / %50 nötr
+                        denge. Keskin direksiyon tepkisi ve el freniyle kontrollü güç kayması.</div>
                 </div>
 
                 <!-- Transmission Shift Speed Option -->
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                <div
+                    style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
                     <span style="font-size:0.68rem; font-weight:700; color:#cbd5e1;">Şanzıman / Vites Geçişi</span>
-                    <button id="gearbox-toggle-btn" onclick="toggleGearboxType()" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:4px; padding:3px 8px; font-size:0.65rem; font-weight:800; cursor:pointer;">
+                    <button id="gearbox-toggle-btn" onclick="toggleGearboxType()"
+                        style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:4px; padding:3px 8px; font-size:0.65rem; font-weight:800; cursor:pointer;">
                         ⚡ DUAL-CLUTCH (HIZLI / 0.08s)
                     </button>
                 </div>
             </div>
 
             <!-- Police Fleet Intelligence Card -->
-            <div style="margin-top:10px; background:rgba(15,23,42,0.85); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px; backdrop-filter:blur(8px);">
+            <div
+                style="margin-top:10px; background:rgba(15,23,42,0.85); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px; backdrop-filter:blur(8px);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                    <span style="font-size:0.75rem; font-weight:900; color:#ef4444; letter-spacing:1px;">🚨 EMNİYET SİLAH DONANIMI (EMP & TERMİT)</span>
+                    <span style="font-size:0.75rem; font-weight:900; color:#ef4444; letter-spacing:1px;">🚨 EMNİYET
+                        SİLAH DONANIMI (EMP & TERMİT)</span>
                 </div>
                 <div style="display:flex; gap:8px;">
-                    <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
-                        <img src="assets/images/police_interceptor.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_interceptor.jpg';" alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
-                        <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#f8fafc;">INTERCEPTOR (EMP DART)</div>
+                    <div
+                        style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
+                        <img src="assets/images/police_interceptor.jpg"
+                            onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_interceptor.jpg';"
+                            alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
+                        <div
+                            style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#f8fafc;">
+                            INTERCEPTOR (EMP DART)</div>
                     </div>
-                    <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
-                        <img src="assets/images/police_rhino.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_rhino.jpg';" alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
-                        <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#ef4444;">RHINO (KOR TERMİT)</div>
+                    <div
+                        style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
+                        <img src="assets/images/police_rhino.jpg"
+                            onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_rhino.jpg';"
+                            alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
+                        <div
+                            style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#ef4444;">
+                            RHINO (KOR TERMİT)</div>
                     </div>
                 </div>
             </div>
@@ -903,7 +1054,8 @@
             </div>
             <div class="hud-stat" style="border-left: 1px solid rgba(255,255,255,0.15); padding-left: 14px;">
                 <span class="stat-label">🧠 POLİS YAPAY ZEKASI</span>
-                <span class="stat-val" id="ai-tactic-val" style="color:#fbbf24; font-size:0.82rem; font-weight:900;">🔒 KUTULAMA (BOX-IN)</span>
+                <span class="stat-val" id="ai-tactic-val" style="color:#fbbf24; font-size:0.82rem; font-weight:900;">🔒
+                    KUTULAMA (BOX-IN)</span>
             </div>
         </div>
 
@@ -955,12 +1107,15 @@
             </div>
             <div class="gear-nitro-row">
                 <div class="gear-badge" id="gear-display">1</div>
-                <div id="hud-tuning-badge" style="font-size:0.65rem; font-weight:800; padding:2px 7px; border-radius:4px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8; color:#38bdf8; letter-spacing:0.5px;">
+                <div id="hud-tuning-badge"
+                    style="font-size:0.65rem; font-weight:800; padding:2px 7px; border-radius:4px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8; color:#38bdf8; letter-spacing:0.5px;">
                     ⚖️ SIMCADE
                 </div>
                 <div class="nitro-bar-container">
                     <div class="nitro-label">NOS (NITRO)</div>
-                    <div class="nitro-track"><div class="nitro-fill" id="nitro-bar"></div></div>
+                    <div class="nitro-track">
+                        <div class="nitro-fill" id="nitro-bar"></div>
+                    </div>
                 </div>
                 <div style="font-size:0.85rem; font-weight:800; color:#38bdf8;" id="rpm-display">950 RPM</div>
             </div>
@@ -1180,23 +1335,23 @@
         const highwayChunks = [];
         const repairPickups = [];
 
-        const roadMat = new THREE.MeshStandardMaterial({ 
-            color: 0x242a36, 
-            roughness: 0.75, 
-            metalness: 0.08 
+        const roadMat = new THREE.MeshStandardMaterial({
+            color: 0x242a36,
+            roughness: 0.75,
+            metalness: 0.08
         });
         const asphaltGeo = new THREE.PlaneGeometry(48, CHUNK_LEN);
 
         const stripeYellowMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
-        const stripeWhiteMat  = new THREE.MeshBasicMaterial({ color: 0xe2e8f0 });
-        const guardrailMat    = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.85, roughness: 0.2 });
-        const poleMat         = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7 });
-        const bulbMat         = new THREE.MeshBasicMaterial({ color: 0xfff0d0 });
-        const groundGlowMat   = new THREE.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.28, side: THREE.DoubleSide });
+        const stripeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xe2e8f0 });
+        const guardrailMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.85, roughness: 0.2 });
+        const poleMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7 });
+        const bulbMat = new THREE.MeshBasicMaterial({ color: 0xfff0d0 });
+        const groundGlowMat = new THREE.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.28, side: THREE.DoubleSide });
 
         const reflectorYellowMat = new THREE.MeshBasicMaterial({ color: 0xffbb00 });
-        const reflectorWhiteMat  = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        const reflectorGeo       = new THREE.SphereGeometry(0.22, 6, 6);
+        const reflectorWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const reflectorGeo = new THREE.SphereGeometry(0.22, 6, 6);
 
         const wrenchGeo = new THREE.BoxGeometry(0.3, 1.2, 0.3);
         const wrenchMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
@@ -1376,9 +1531,9 @@
                 wheelGeo.rotateZ(Math.PI / 2);
                 const positions = [
                     [-1.02, 0.38, 1.3],
-                    [ 1.02, 0.38, 1.3],
+                    [1.02, 0.38, 1.3],
                     [-1.02, 0.38, -1.3],
-                    [ 1.02, 0.38, -1.3]
+                    [1.02, 0.38, -1.3]
                 ];
                 positions.forEach(pos => {
                     const w = new THREE.Mesh(wheelGeo, tireMat);
@@ -1704,12 +1859,12 @@
             },
             {
                 name: "Ferrari 458 GT",
-                badge: "TORPİLLİ HYPER SPEC (500 KM/H)",
-                hp: "1850 HP",
-                topSpeed: "500 KM/H",
-                accel: "0.8 SN",
-                speedVal: 500,
-                accelVal: 4.25,
+                badge: "TORPİLLİ HYPER SPEC (999 KM/H)",
+                hp: "9999 HP",
+                topSpeed: "999 KM/H",
+                accel: "0.1 SN",
+                speedVal: 999,
+                accelVal: 7.5,
                 isTorpilli: true,
                 bodyColor: 0xd90429,
                 image: "assets/images/ferrari_gt.jpg"
@@ -1796,10 +1951,10 @@
                 id: 'v12_hyper',
                 name: '6.5L Quad-Turbo Hyper V12 (+750 HP)',
                 badge: '500 KM/H HYPER BEAST',
-                hpBonus: 750,
-                speedBonus: 125,
+                hpBonus: 100,
+                speedBonus: 300,
                 accelMultiplier: 2.20,
-                rpmMax: 9900,
+                rpmMax: 13725,
                 soundPitch: 1.40,
                 soundType: 'sawtooth',
                 desc: 'Sınırsız yarış motoru. 500 KM/H azami hız ve roket ivmelenmesi.'
@@ -1811,7 +1966,7 @@
                 hpBonus: 450,
                 speedBonus: 60,
                 accelMultiplier: 2.40,
-                rpmMax: 11000,
+                rpmMax: 15000,
                 soundPitch: 1.85,
                 soundType: 'triangle',
                 desc: 'Sıfır gecikmeli elektrik itişi. 0.8 sn 0-100 kalkış ve türbin ıslığı.'
@@ -1874,7 +2029,7 @@
             const effectiveSpeedVal = Math.min(2500, baseCar.speedVal + engine.speedBonus);
             const effectiveAccelVal = (baseCar.accelVal || 1.0) * engine.accelMultiplier;
             const raw0to100 = parseFloat(baseCar.accel) || 2.9;
-            const calculated0to100 = Math.max(0.1, (raw0to100 / engine.accelMultiplier)).toFixed(1) + " SN";
+            const calculated0to100 = Math.max(0.05, (raw0to100 / engine.accelMultiplier)).toFixed(1) + " SN";
 
             return {
                 ...baseCar,
@@ -2054,7 +2209,7 @@
 
             const imgEl = document.getElementById('menu-car-img');
             if (imgEl && cfg.image) {
-                imgEl.onerror = function() {
+                imgEl.onerror = function () {
                     if (!this.src.includes('nfs_hardcore_pursuit/')) {
                         this.src = 'nfs_hardcore_pursuit/' + cfg.image;
                     }
@@ -2154,7 +2309,7 @@
                 });
             } else if (fileName.endsWith('.obj')) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const contents = e.target.result;
                     const model = objLoader.parse(contents);
                     normalize3DModelScale(model);
@@ -2181,7 +2336,7 @@
             }
         }
 
-        window.onCustomFileSelected = function(e) {
+        window.onCustomFileSelected = function (e) {
             if (e.target.files && e.target.files[0]) {
                 handleUserUploadedModel(e.target.files[0]);
             }
@@ -2270,9 +2425,9 @@
             wheelGeo.rotateZ(Math.PI / 2);
             [
                 [-1.0, 0.4, 1.35],
-                [ 1.0, 0.4, 1.35],
+                [1.0, 0.4, 1.35],
                 [-1.0, 0.4, -1.35],
-                [ 1.0, 0.4, -1.35]
+                [1.0, 0.4, -1.35]
             ].forEach(pos => {
                 const w = new THREE.Mesh(wheelGeo, tireMat);
                 w.position.set(...pos);
@@ -2442,6 +2597,10 @@
                     const gearFactor = (cfg && cfg.isTorpilli) ? 1.0 : Math.max(0.65, 1.0 - (currentGear - 1) * 0.06);
                     driveForce = (6200 * (cfg.accelVal || 1.0) * gearFactor);
 
+                    if (cfg && cfg.speedVal > 500) {
+                        driveForce *= Math.max(1.0, cfg.speedVal / 320);
+                    }
+
                     // During clutch disengagement, cut torque (realistic shift lag)
                     if (car.shiftTimer > 0) {
                         driveForce = 0;
@@ -2477,8 +2636,8 @@
             // --- FORZA REAL DUAL-CLUTCH & SEQUENTIAL SHIFT DYNAMICS ---
             if (car.gear !== 'R') {
                 const forwardSpeed = Math.max(0, car.vel.z);
-                const gearRatios = (cfg && cfg.isTorpilli) 
-                    ? [3.2, 2.0, 1.40, 1.02, 0.78, 0.60, 0.46] 
+                const gearRatios = (cfg && cfg.isTorpilli)
+                    ? [3.2, 2.0, 1.40, 1.02, 0.78, 0.60, 0.46, 0.32]
                     : [3.45, 2.12, 1.48, 1.15, 0.92, 0.74];
                 const maxGear = gearRatios.length;
                 const finalDrive = (cfg && cfg.isTorpilli) ? 3.20 : 3.65;
@@ -2538,11 +2697,11 @@
             const effSteer = car.steerAngle * steerSign;
 
             const alphaFront = Math.atan2(vx + car.yawRate * 1.35, vz) - effSteer;
-            const alphaRear  = Math.atan2(vx - car.yawRate * 1.45, vz);
+            const alphaRear = Math.atan2(vx - car.yawRate * 1.45, vz);
 
             const handling = cfg.handling;
             let D_front = (cfg.isTorpilli ? 14500 : 9400) * handling.muFront * Math.min(2.0, (cfg.accelVal || 1.0) * 0.85);
-            let D_rear  = (cfg.isTorpilli ? 14500 : 9400) * handling.muRear  * Math.min(2.0, (cfg.accelVal || 1.0) * 0.85);
+            let D_rear = (cfg.isTorpilli ? 14500 : 9400) * handling.muRear * Math.min(2.0, (cfg.accelVal || 1.0) * 0.85);
 
             if (keys.space) {
                 D_rear *= handling.driftSlipMult;
@@ -2562,10 +2721,10 @@
             const B = (handling.id === 'grip') ? 10.5 : (handling.id === 'drift' ? 6.5 : 8.5);
             const C = 1.35;
             const FyFront = -D_front * Math.sin(C * Math.atan(B * alphaFront));
-            const FyRear  = -D_rear  * Math.sin(C * Math.atan(B * alphaRear));
+            const FyRear = -D_rear * Math.sin(C * Math.atan(B * alphaRear));
 
             const dragSign = Math.sign(car.vel.z) || 1;
-            const dragCoeff = (cfg && cfg.isTorpilli) ? 0.08 : 0.32;
+            const dragCoeff = (cfg && cfg.isTorpilli) ? 0.035 : 0.32;
             const dragForce = 0.5 * 1.225 * dragCoeff * 2.1 * car.vel.z * car.vel.z * dragSign;
 
             let totalFz = driveForce - dragForce;
@@ -2782,11 +2941,8 @@
             }
         }
 
-        // --- INSTANT HEAT SELECTOR (FIXED: Never overridden back to Heat 1!) ---
-        window.setInstantHeat = function(heat) {
+        window.setInstantHeat = function (heat) {
             policeDirector.heatLevel = heat;
-            // Synchronize elapsed time with this heat so natural escalation doesn't override it!
-            policeDirector.timeElapsed = (heat - 1) * 300;
             spawnPoliceFleet(heat);
             const count = getTargetPoliceCount(heat);
             showRadioMsg(`🚨 MERKEZ: TAKİP ŞİDDETİ HEAT ${heat}'E YÜKSELTİLDİ! (${count} POLİS AKTİF EDİLDİ!)`);
@@ -3353,12 +3509,12 @@
 
             const m = Math.floor(policeDirector.timeElapsed / 60);
             const s = Math.floor(policeDirector.timeElapsed % 60);
-            document.getElementById('time-val').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            document.getElementById('time-val').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 
             const nextHeatRemaining = 300 - (policeDirector.timeElapsed % 300);
             const nm = Math.floor(nextHeatRemaining / 60);
             const ns = Math.floor(nextHeatRemaining % 60);
-            document.getElementById('next-heat-val').textContent = `${String(nm).padStart(2,'0')}:${String(ns).padStart(2,'0')}`;
+            document.getElementById('next-heat-val').textContent = `${String(nm).padStart(2, '0')}:${String(ns).padStart(2, '0')}`;
 
             const tacticEl = document.getElementById('ai-tactic-val');
             if (tacticEl) {
@@ -3424,7 +3580,7 @@
             if (ov) ov.style.display = 'flex';
         }
 
-        window.retryPursuit = function() {
+        window.retryPursuit = function () {
             const ov = document.getElementById('busted-overlay');
             if (ov) ov.style.display = 'none';
             document.getElementById('ingame-hud').style.display = 'block';
@@ -3472,6 +3628,7 @@
             car.lastHitTimer = 0;
             car.bountyScore = 0;
             car.copsWrecked = 0;
+            policeDirector.timeElapsed = 0;
 
             setInstantHeat(heat);
         }
@@ -3493,4 +3650,5 @@
         window.returnToMainMenu = returnToMainMenu;
     </script>
 </body>
+
 </html>
