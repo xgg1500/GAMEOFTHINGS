@@ -1871,10 +1871,10 @@
 
             const rawHp = parseInt(baseCar.hp) || 600;
             const effectiveHp = rawHp + engine.hpBonus;
-            const effectiveSpeedVal = Math.min(500, baseCar.speedVal + engine.speedBonus);
+            const effectiveSpeedVal = Math.min(2500, baseCar.speedVal + engine.speedBonus);
             const effectiveAccelVal = (baseCar.accelVal || 1.0) * engine.accelMultiplier;
             const raw0to100 = parseFloat(baseCar.accel) || 2.9;
-            const calculated0to100 = Math.max(0.6, (raw0to100 / engine.accelMultiplier)).toFixed(1) + " SN";
+            const calculated0to100 = Math.max(0.1, (raw0to100 / engine.accelMultiplier)).toFixed(1) + " SN";
 
             return {
                 ...baseCar,
