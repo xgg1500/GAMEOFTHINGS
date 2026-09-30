@@ -790,7 +790,7 @@
                 </div>
 
                 <div style="position:relative; width:100%; height:130px; border-radius:8px; overflow:hidden; margin:8px 0 10px 0; border:1px solid rgba(56,189,248,0.4); box-shadow:0 4px 16px rgba(0,0,0,0.6);">
-                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg" alt="Car Render" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
+                    <img id="menu-car-img" src="assets/images/bmw_m3_gtr.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/bmw_m3_gtr.jpg';" alt="Car Render" style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
                     <div style="position:absolute; bottom:6px; left:8px; background:rgba(0,0,0,0.75); padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; color:#38bdf8; letter-spacing:1px;">8K GERÇEK ARAÇ GÖRÜNTÜSÜ</div>
                 </div>
 
@@ -816,6 +816,50 @@
                 </div>
             </div>
 
+            <!-- FORZA PERFORMANCE & TUNING ATELIER -->
+            <div class="tuning-panel" style="margin-top:10px; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:12px; backdrop-filter:blur(8px);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:0.76rem; font-weight:900; color:#38bdf8; letter-spacing:1px;">🛠️ FORZA TUNING & MOTOR ATÖLYESİ</span>
+                    <span id="tuning-total-hp" style="font-size:0.75rem; font-weight:800; color:#10b981;">OEM SPEC</span>
+                </div>
+
+                <!-- Engine Swap Dropdown -->
+                <div style="margin-bottom:10px;">
+                    <div style="font-size:0.68rem; font-weight:700; color:#94a3b8; margin-bottom:4px;">MOTOR SWAP (MOTOR DEĞİŞTİRME)</div>
+                    <select id="engine-swap-select" onchange="onEngineSwapChanged(this.value)" style="width:100%; background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:7px 10px; font-size:0.8rem; font-weight:700; outline:none; cursor:pointer;">
+                        <option value="stock">🏭 Fabrika Çıkışı (Stock Factory Spec)</option>
+                        <option value="v8_twin_turbo">🌪️ 4.0L Twin-Turbo V8 (+240 HP / Yüksek Tork)</option>
+                        <option value="v10_screamer">⚡ 5.2L V10 Naturally Aspirated (+380 HP / 9600 RPM)</option>
+                        <option value="v12_hyper">🚀 6.5L Quad-Turbo Hyper V12 (+750 HP / 500 KM/H)</option>
+                        <option value="ev_extreme">🔋 Dual-Motor Extreme EV (+450 HP / 0.8s 0-100 Roket)</option>
+                    </select>
+                    <div id="engine-desc-label" style="font-size:0.65rem; color:#94a3b8; margin-top:3px; font-style:italic;">Orijinal fabrika motoru ve dengeli yarış konfigürasyonu.</div>
+                </div>
+
+                <!-- Handling & Tire Compound 3-Stage Slider -->
+                <div style="margin-bottom:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+                        <span style="font-size:0.68rem; font-weight:700; color:#94a3b8;">YOL TUTUŞ & AĞIRLIK DAĞILIMI</span>
+                        <span id="handling-badge" style="font-size:0.68rem; font-weight:800; color:#f59e0b;">⚖️ DENGELİ SIMCADE</span>
+                    </div>
+                    <input type="range" id="handling-slider" min="0" max="2" step="1" value="1" oninput="onHandlingSliderChanged(this.value)" style="width:100%; accent-color:#38bdf8; cursor:pointer;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.6rem; font-weight:800; color:#64748b; margin-top:1px;">
+                        <span>🏁 TRACK GRIP</span>
+                        <span>⚖️ SIMCADE</span>
+                        <span>💨 PRO DRIFT</span>
+                    </div>
+                    <div id="handling-desc-label" style="font-size:0.65rem; color:#94a3b8; margin-top:3px; font-style:italic;">%50 / %50 nötr denge. Keskin direksiyon tepkisi ve el freniyle kontrollü güç kayması.</div>
+                </div>
+
+                <!-- Transmission Shift Speed Option -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                    <span style="font-size:0.68rem; font-weight:700; color:#cbd5e1;">Şanzıman / Vites Geçişi</span>
+                    <button id="gearbox-toggle-btn" onclick="toggleGearboxType()" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; border-radius:4px; padding:3px 8px; font-size:0.65rem; font-weight:800; cursor:pointer;">
+                        ⚡ DUAL-CLUTCH (HIZLI / 0.08s)
+                    </button>
+                </div>
+            </div>
+
             <!-- Police Fleet Intelligence Card -->
             <div style="margin-top:10px; background:rgba(15,23,42,0.85); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px; backdrop-filter:blur(8px);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -823,11 +867,11 @@
                 </div>
                 <div style="display:flex; gap:8px;">
                     <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
-                        <img src="assets/images/police_interceptor.jpg" alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
+                        <img src="assets/images/police_interceptor.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_interceptor.jpg';" alt="Interceptor" style="width:100%; height:55px; object-fit:cover;">
                         <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#f8fafc;">INTERCEPTOR (EMP DART)</div>
                     </div>
                     <div style="flex:1; border-radius:6px; overflow:hidden; border:1px solid #334155; position:relative;">
-                        <img src="assets/images/police_rhino.jpg" alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
+                        <img src="assets/images/police_rhino.jpg" onerror="if(!this.src.includes('nfs_hardcore_pursuit/'))this.src='nfs_hardcore_pursuit/assets/images/police_rhino.jpg';" alt="Tactical Rhino" style="width:100%; height:55px; object-fit:cover;">
                         <div style="font-size:0.6rem; font-weight:800; text-align:center; background:#0f172a; padding:2px; color:#ef4444;">RHINO (KOR TERMİT)</div>
                     </div>
                 </div>
@@ -893,6 +937,8 @@
             <div><span class="key-tag">A</span> / <span class="key-tag">D</span> : Direksiyon</div>
             <div><span class="key-tag">BOŞLUK</span> : El Freni (Drift)</div>
             <div><span class="key-tag">SHIFT</span> : Nitro Boost (Mavi Alev)</div>
+            <div><span class="key-tag">T</span> : Yol Tutuş Modu (Grip / Simcade / Drift)</div>
+            <div><span class="key-tag">R</span> : Aracı Düzelt / Yola Hizala</div>
             <div><span class="key-tag">C</span> : Kamera Değiştir (Kokpit / Takip)</div>
             <div><span class="key-tag">1-9, 0</span> : Anında Heat Değiştir (0=H10)</div>
             <button class="menu-return-btn" onclick="returnToMainMenu()">⚙️ Garaja / Menüye Dön</button>
@@ -909,6 +955,9 @@
             </div>
             <div class="gear-nitro-row">
                 <div class="gear-badge" id="gear-display">1</div>
+                <div id="hud-tuning-badge" style="font-size:0.65rem; font-weight:800; padding:2px 7px; border-radius:4px; background:rgba(15,23,42,0.85); border:1px solid #38bdf8; color:#38bdf8; letter-spacing:0.5px;">
+                    ⚖️ SIMCADE
+                </div>
                 <div class="nitro-bar-container">
                     <div class="nitro-label">NOS (NITRO)</div>
                     <div class="nitro-track"><div class="nitro-fill" id="nitro-bar"></div></div>
@@ -1022,6 +1071,27 @@
                 gain.connect(audioCtx.destination);
                 osc.start(now);
                 osc.stop(now + 0.08);
+            } else if (type === 'blowoff') {
+                // Turbo Blow-Off Valve (HKS Style Crisp Hiss & Pop)
+                const bufferSize = Math.floor(audioCtx.sampleRate * 0.18);
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.04));
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(2700, now);
+                filter.Q.setValueAtTime(3.2, now);
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                noise.start(now);
             }
         }
 
@@ -1052,17 +1122,32 @@
         const gltfLoader = new THREE.GLTFLoader();
         const objLoader = new THREE.OBJLoader();
 
+        function loadTextureSafe(path, targetMat) {
+            const tex = textureLoader.load(path, undefined, undefined, () => {
+                if (!path.startsWith('nfs_hardcore_pursuit/')) {
+                    loadTextureSafe('nfs_hardcore_pursuit/' + path, targetMat);
+                }
+            });
+            if (targetMat) {
+                targetMat.map = tex;
+                targetMat.needsUpdate = true;
+            }
+            return tex;
+        }
+
         // Atmospheric Balanced Night Lighting
-        const ambientLight = new THREE.AmbientLight(0x2c3e56, 1.35);
+        const ambientLight = new THREE.AmbientLight(0x384a62, 1.55);
         scene.add(ambientLight);
 
-        const moonLight = new THREE.DirectionalLight(0x9cc2f0, 1.45);
+        const moonLight = new THREE.DirectionalLight(0x9cc2f0, 1.6);
         moonLight.position.set(70, 160, -40);
         scene.add(moonLight);
+        scene.add(moonLight.target);
 
-        const roadFillLight = new THREE.DirectionalLight(0x1a2636, 0.7);
+        const roadFillLight = new THREE.DirectionalLight(0x223348, 0.9);
         roadFillLight.position.set(-60, 90, 60);
         scene.add(roadFillLight);
+        scene.add(roadFillLight.target);
 
         // Showroom Turntable Ring
         const turntableGeo = new THREE.RingGeometry(0.1, 5.8, 64);
@@ -1091,11 +1176,15 @@
 
         // --- 4. INFINITE HIGHWAY CHUNK SYSTEM ---
         const CHUNK_LEN = 160;
-        const NUM_CHUNKS = 16;
+        const NUM_CHUNKS = 22;
         const highwayChunks = [];
         const repairPickups = [];
 
-        const roadMat = new THREE.MeshStandardMaterial({ color: 0x121620, roughness: 0.18, metalness: 0.5 });
+        const roadMat = new THREE.MeshStandardMaterial({ 
+            color: 0x242a36, 
+            roughness: 0.75, 
+            metalness: 0.08 
+        });
         const asphaltGeo = new THREE.PlaneGeometry(48, CHUNK_LEN);
 
         const stripeYellowMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
@@ -1103,7 +1192,7 @@
         const guardrailMat    = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.85, roughness: 0.2 });
         const poleMat         = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7 });
         const bulbMat         = new THREE.MeshBasicMaterial({ color: 0xfff0d0 });
-        const groundGlowMat   = new THREE.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+        const groundGlowMat   = new THREE.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.28, side: THREE.DoubleSide });
 
         const reflectorYellowMat = new THREE.MeshBasicMaterial({ color: 0xffbb00 });
         const reflectorWhiteMat  = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -1234,21 +1323,38 @@
         }
 
         function updateHighwayChunks(playerZ) {
-            for (let i = 0; i < highwayChunks.length; i++) {
-                const chunk = highwayChunks[i];
-                if (chunk.position.z < playerZ - 320) {
-                    let maxZ = -Infinity;
-                    for (let j = 0; j < highwayChunks.length; j++) {
-                        if (highwayChunks[j].position.z > maxZ) maxZ = highwayChunks[j].position.z;
-                    }
-                    chunk.position.z = maxZ + CHUNK_LEN;
+            // Bidirectional self-healing highway recycling:
+            // Guarantees road is ALWAYS rendered whether driving forward, backward, or spinning out!
+            let safety = 0;
+            while (safety++ < 25) {
+                let minChunk = highwayChunks[0];
+                let maxChunk = highwayChunks[0];
+                for (let i = 1; i < highwayChunks.length; i++) {
+                    if (highwayChunks[i].position.z < minChunk.position.z) minChunk = highwayChunks[i];
+                    if (highwayChunks[i].position.z > maxChunk.position.z) maxChunk = highwayChunks[i];
+                }
 
+                // If player moves forward (+Z) and chunk is left behind:
+                if (minChunk.position.z < playerZ - 480) {
+                    minChunk.position.z = maxChunk.position.z + CHUNK_LEN;
                     repairPickups.forEach(p => {
-                        if (p.chunk === chunk) {
+                        if (p.chunk === minChunk) {
                             p.active = true;
                             p.group.visible = true;
                         }
                     });
+                }
+                // If player moves backward (-Z) or spun around:
+                else if (maxChunk.position.z > playerZ + 2560) {
+                    maxChunk.position.z = minChunk.position.z - CHUNK_LEN;
+                    repairPickups.forEach(p => {
+                        if (p.chunk === maxChunk) {
+                            p.active = true;
+                            p.group.visible = true;
+                        }
+                    });
+                } else {
+                    break;
                 }
             }
         }
@@ -1647,6 +1753,219 @@
         ];
 
         let selectedCarIdx = 0;
+
+        // --- 6.5 FORZA ADVANCED TUNING & PERFORMANCE ENGINE ---
+        const ENGINE_SWAPS = [
+            {
+                id: 'stock',
+                name: 'Fabrika Çıkışı (Stock Factory Spec)',
+                badge: 'OEM ORIGINAL',
+                hpBonus: 0,
+                speedBonus: 0,
+                accelMultiplier: 1.0,
+                rpmMax: 8800,
+                soundPitch: 1.0,
+                soundType: 'sawtooth',
+                desc: 'Orijinal fabrika motoru ve dengeli yarış konfigürasyonu.'
+            },
+            {
+                id: 'v8_twin_turbo',
+                name: '4.0L Twin-Turbo V8 (+240 HP)',
+                badge: 'HEAVY TORQUE FORCE',
+                hpBonus: 240,
+                speedBonus: 45,
+                accelMultiplier: 1.35,
+                rpmMax: 8900,
+                soundPitch: 0.85,
+                soundType: 'sawtooth',
+                desc: 'Çift turbo beslemeli V8. Devasa orta devir torku ve güçlü hızlanma.'
+            },
+            {
+                id: 'v10_screamer',
+                name: '5.2L Naturally Aspirated V10 (+380 HP)',
+                badge: '9500 RPM SCREAMER',
+                hpBonus: 380,
+                speedBonus: 75,
+                accelMultiplier: 1.55,
+                rpmMax: 9600,
+                soundPitch: 1.25,
+                soundType: 'sawtooth',
+                desc: 'Yüksek devirli atmosferik İtalyan çığlığı. Yüksek hızlarda acımasız güç.'
+            },
+            {
+                id: 'v12_hyper',
+                name: '6.5L Quad-Turbo Hyper V12 (+750 HP)',
+                badge: '500 KM/H HYPER BEAST',
+                hpBonus: 750,
+                speedBonus: 125,
+                accelMultiplier: 2.20,
+                rpmMax: 9900,
+                soundPitch: 1.40,
+                soundType: 'sawtooth',
+                desc: 'Sınırsız yarış motoru. 500 KM/H azami hız ve roket ivmelenmesi.'
+            },
+            {
+                id: 'ev_extreme',
+                name: 'Dual-Motor Extreme EV (+450 HP)',
+                badge: 'INSTANT TORQUE ROCKET',
+                hpBonus: 450,
+                speedBonus: 60,
+                accelMultiplier: 2.40,
+                rpmMax: 11000,
+                soundPitch: 1.85,
+                soundType: 'triangle',
+                desc: 'Sıfır gecikmeli elektrik itişi. 0.8 sn 0-100 kalkış ve türbin ıslığı.'
+            }
+        ];
+
+        const HANDLING_MODES = [
+            {
+                id: 'grip',
+                name: 'TRACK GRIP',
+                label: '🏁 TRACK GRIP (Yumuşak Yarış Lastiği)',
+                desc: 'Maksimum apex tutuşu, %52 ön ağırlık. Sıfır savrulma, rayda gidermiş gibi viraj alma.',
+                muFront: 1.40,
+                muRear: 1.35,
+                driftSlipMult: 0.40,
+                handbrakeBrakeForce: 15000,
+                yawDamping: 8.8,
+                steerSpeed: 4.2
+            },
+            {
+                id: 'balanced',
+                name: 'SIMCADE BALANCED',
+                label: '⚖️ DENGELİ SIMCADE (Forza Horizon)',
+                desc: '%50 / %50 nötr denge. Keskin direksiyon tepkisi ve el freniyle kontrollü güç kayması.',
+                muFront: 1.0,
+                muRear: 1.0,
+                driftSlipMult: 0.22,
+                handbrakeBrakeForce: 9500,
+                yawDamping: 6.5,
+                steerSpeed: 3.8
+            },
+            {
+                id: 'drift',
+                name: 'PRO DRIFT',
+                label: '💨 PRO DRIFT (Sert Lastik / NFS)',
+                desc: '%46 ön / %54 arka ağırlık. Viraja girer girmez devasa açıyla duman atan NFS drift modu.',
+                muFront: 0.85,
+                muRear: 0.52,
+                driftSlipMult: 0.08,
+                handbrakeBrakeForce: 6000,
+                yawDamping: 4.2,
+                steerSpeed: 4.8
+            }
+        ];
+
+        const playerTuning = {
+            selectedEngineId: 'stock',
+            handlingModeIdx: 1, // 0: Grip, 1: Balanced, 2: Drift
+            shiftSpeed: 0.08, // Dual-clutch (0.08s) vs Sequential (0.14s)
+            isDualClutch: true
+        };
+
+        function getEffectiveCarStats() {
+            const baseCar = CAR_ROSTER[selectedCarIdx] || CAR_ROSTER[0];
+            const engine = ENGINE_SWAPS.find(e => e.id === playerTuning.selectedEngineId) || ENGINE_SWAPS[0];
+            const handling = HANDLING_MODES[playerTuning.handlingModeIdx] || HANDLING_MODES[1];
+
+            const rawHp = parseInt(baseCar.hp) || 600;
+            const effectiveHp = rawHp + engine.hpBonus;
+            const effectiveSpeedVal = Math.min(500, baseCar.speedVal + engine.speedBonus);
+            const effectiveAccelVal = (baseCar.accelVal || 1.0) * engine.accelMultiplier;
+            const raw0to100 = parseFloat(baseCar.accel) || 2.9;
+            const calculated0to100 = Math.max(0.6, (raw0to100 / engine.accelMultiplier)).toFixed(1) + " SN";
+
+            return {
+                ...baseCar,
+                name: baseCar.name,
+                badge: engine.id !== 'stock' ? `${baseCar.badge} • ${engine.badge}` : baseCar.badge,
+                hp: `${effectiveHp} HP`,
+                topSpeed: `${effectiveSpeedVal} KM/H`,
+                accel: calculated0to100,
+                speedVal: effectiveSpeedVal,
+                accelVal: effectiveAccelVal,
+                bodyColor: baseCar.bodyColor,
+                image: baseCar.image,
+                isPorsche: baseCar.isPorsche,
+                isTorpilli: baseCar.isTorpilli || (engine.id === 'v12_hyper'),
+                engine: engine,
+                handling: handling
+            };
+        }
+
+        function updateTuningUI() {
+            const cfg = getEffectiveCarStats();
+            const engine = cfg.engine;
+            const handling = cfg.handling;
+
+            const totalHpEl = document.getElementById('tuning-total-hp');
+            if (totalHpEl) {
+                totalHpEl.textContent = engine.hpBonus > 0 ? `+${engine.hpBonus} HP (${cfg.hp})` : `${cfg.hp}`;
+                totalHpEl.style.color = engine.hpBonus > 0 ? '#10b981' : '#38bdf8';
+            }
+
+            const engineDesc = document.getElementById('engine-desc-label');
+            if (engineDesc) engineDesc.textContent = engine.desc;
+
+            const handlingBadge = document.getElementById('handling-badge');
+            if (handlingBadge) {
+                handlingBadge.textContent = handling.label;
+                handlingBadge.style.color = handling.id === 'grip' ? '#10b981' : (handling.id === 'drift' ? '#ef4444' : '#f59e0b');
+            }
+
+            const handlingDesc = document.getElementById('handling-desc-label');
+            if (handlingDesc) handlingDesc.textContent = handling.desc;
+
+            const slider = document.getElementById('handling-slider');
+            if (slider) slider.value = playerTuning.handlingModeIdx;
+
+            const select = document.getElementById('engine-swap-select');
+            if (select) select.value = playerTuning.selectedEngineId;
+
+            const gBtn = document.getElementById('gearbox-toggle-btn');
+            if (gBtn) {
+                gBtn.textContent = playerTuning.isDualClutch ? "⚡ DUAL-CLUTCH (HIZLI / 0.08s)" : "🕹️ SIRALI YARIŞ (TEKME / 0.14s)";
+                gBtn.style.borderColor = playerTuning.isDualClutch ? "#38bdf8" : "#f59e0b";
+                gBtn.style.color = playerTuning.isDualClutch ? "#38bdf8" : "#f59e0b";
+            }
+
+            const hudBadge = document.getElementById('hud-tuning-badge');
+            if (hudBadge) {
+                hudBadge.textContent = handling.name === 'TRACK GRIP' ? '🏁 TRACK GRIP' : (handling.name === 'PRO DRIFT' ? '💨 PRO DRIFT' : '⚖️ SIMCADE');
+                hudBadge.style.color = handling.id === 'grip' ? '#10b981' : (handling.id === 'drift' ? '#ef4444' : '#38bdf8');
+                hudBadge.style.borderColor = hudBadge.style.color;
+            }
+
+            if (engineOsc && audioCtx) {
+                engineOsc.type = engine.soundType || 'sawtooth';
+            }
+        }
+
+        function onEngineSwapChanged(engineId) {
+            playerTuning.selectedEngineId = engineId;
+            updateSelectedCarView();
+            updateTuningUI();
+            playSfx('repair');
+        }
+        window.onEngineSwapChanged = onEngineSwapChanged;
+
+        function onHandlingSliderChanged(val) {
+            playerTuning.handlingModeIdx = parseInt(val);
+            updateSelectedCarView();
+            updateTuningUI();
+            playSfx('repair');
+        }
+        window.onHandlingSliderChanged = onHandlingSliderChanged;
+
+        function toggleGearboxType() {
+            playerTuning.isDualClutch = !playerTuning.isDualClutch;
+            playerTuning.shiftSpeed = playerTuning.isDualClutch ? 0.08 : 0.14;
+            updateTuningUI();
+            playSfx('repair');
+        }
+        window.toggleGearboxType = toggleGearboxType;
+
         const playerGroup = new THREE.Group();
         scene.add(playerGroup);
 
@@ -1705,7 +2024,7 @@
         });
 
         function updateSelectedCarView() {
-            const cfg = CAR_ROSTER[selectedCarIdx];
+            const cfg = getEffectiveCarStats();
             document.getElementById('menu-car-name').textContent = cfg.name;
             document.getElementById('menu-car-class').textContent = cfg.badge;
             document.getElementById('menu-car-hp').textContent = cfg.hp;
@@ -1723,21 +2042,33 @@
                 const pct = Math.min(100, Math.round(((cfg.accelVal || 1.0) / 4.25) * 100));
                 fillAccel.style.width = `${pct}%`;
             }
+            const fillHandling = document.getElementById('fill-handling');
+            if (fillHandling) {
+                const hMode = cfg.handling;
+                const hPct = hMode.id === 'grip' ? 98 : (hMode.id === 'drift' ? 70 : 88);
+                fillHandling.style.width = `${hPct}%`;
+                document.getElementById('stat-handling').textContent = hMode.name;
+            }
+
+            updateTuningUI();
 
             const imgEl = document.getElementById('menu-car-img');
             if (imgEl && cfg.image) {
+                imgEl.onerror = function() {
+                    if (!this.src.includes('nfs_hardcore_pursuit/')) {
+                        this.src = 'nfs_hardcore_pursuit/' + cfg.image;
+                    }
+                };
                 imgEl.src = cfg.image;
             }
 
             if (typeof showroomBillboard !== 'undefined' && showroomBillboard.material) {
-                showroomBillboard.material.map = textureLoader.load(cfg.image);
-                showroomBillboard.material.needsUpdate = true;
+                loadTextureSafe(cfg.image, showroomBillboard.material);
             }
 
             if (typeof navScreen !== 'undefined' && navScreen.material) {
                 const screenImg = cfg.isPorsche ? 'assets/images/porsche_cockpit.jpg' : cfg.image;
-                navScreen.material.map = textureLoader.load(screenImg);
-                navScreen.material.needsUpdate = true;
+                loadTextureSafe(screenImg, navScreen.material);
             }
 
             playerGroup.remove(playerMeshGroup);
@@ -1761,15 +2092,17 @@
             }
         }
 
-        window.nextCar = function() {
+        function nextCar() {
             selectedCarIdx = (selectedCarIdx + 1) % CAR_ROSTER.length;
             updateSelectedCarView();
-        };
+        }
+        window.nextCar = nextCar;
 
-        window.prevCar = function() {
+        function prevCar() {
             selectedCarIdx = (selectedCarIdx - 1 + CAR_ROSTER.length) % CAR_ROSTER.length;
             updateSelectedCarView();
-        };
+        }
+        window.prevCar = prevCar;
 
         // --- 6. USER CUSTOM 3D MODEL LOADER ---
         function normalize3DModelScale(object3D) {
@@ -1968,7 +2301,9 @@
             empDisabledTimer: 0,
             damageCooldown: 0,
             lastHitTimer: 0,
-            spikePunctureTimer: 0
+            spikePunctureTimer: 0,
+            shiftTimer: 0,
+            shiftKickTimer: 0
         };
 
         const keys = { w: false, s: false, a: false, d: false, space: false, shift: false };
@@ -1988,6 +2323,24 @@
             if (k === 'c') {
                 cameraMode = (cameraMode + 1) % 2;
                 camPill.textContent = cameraMode === 0 ? "KAMERA: TAKİP (CHASE)" : "KAMERA: 1. ŞAHIS KOKPİT (FPS)";
+            }
+
+            if (k === 'r') {
+                // Instant Car Reset & Highway Realignment
+                car.yaw = 0;
+                car.yawRate = 0;
+                car.vel.x = 0;
+                car.vel.z = Math.max(30, Math.abs(car.vel.z));
+                car.pos.x = THREE.MathUtils.clamp(car.pos.x, -14, 14);
+                showRadioMsg("⚡ ARAÇ DÜZELTİLDİ: OTOBANA HİZALANDI!");
+            }
+
+            if (k === 't') {
+                // Cycle Handling Tuning on the fly!
+                playerTuning.handlingModeIdx = (playerTuning.handlingModeIdx + 1) % HANDLING_MODES.length;
+                const newMode = HANDLING_MODES[playerTuning.handlingModeIdx];
+                updateTuningUI();
+                showRadioMsg(`🔧 FORZA YOL TUTUŞ AYARI: ${newMode.label}`);
             }
 
             // Quick Heat Selector Keys 1 to 9, 0 (Key '0' = Heat 10 MAX!)
@@ -2043,9 +2396,9 @@
                 car.vel.x += (Math.random() - 0.5) * 5.0 * dt;
             }
 
-            const cfg = CAR_ROSTER[selectedCarIdx];
+            const cfg = getEffectiveCarStats();
             const maxSteer = 0.44;
-            const steerSpeed = 3.8;
+            const steerSpeed = (cfg.handling && cfg.handling.steerSpeed) ? cfg.handling.steerSpeed : 3.8;
 
             if (keys.a) car.steerAngle = Math.min(maxSteer, car.steerAngle + steerSpeed * dt);
             else if (keys.d) car.steerAngle = Math.max(-maxSteer, car.steerAngle - steerSpeed * dt);
@@ -2088,6 +2441,16 @@
                     const currentGear = typeof car.gear === 'number' ? car.gear : 1;
                     const gearFactor = (cfg && cfg.isTorpilli) ? 1.0 : Math.max(0.65, 1.0 - (currentGear - 1) * 0.06);
                     driveForce = (6200 * (cfg.accelVal || 1.0) * gearFactor);
+
+                    // During clutch disengagement, cut torque (realistic shift lag)
+                    if (car.shiftTimer > 0) {
+                        driveForce = 0;
+                    } else if (car.shiftKickTimer > 0) {
+                        // Clutch engagement torque surge
+                        car.shiftKickTimer -= dt;
+                        driveForce *= 1.25;
+                    }
+
                     if (car.isNitroBoosting) driveForce *= ((cfg && cfg.isTorpilli) ? 2.6 : 1.75);
                 }
             } else if (keys.s) {
@@ -2108,9 +2471,10 @@
             }
 
             if (keys.space) {
-                brakingForce += (cfg && cfg.isTorpilli) ? 22000 : 8500;
+                brakingForce += (cfg && cfg.isTorpilli) ? 22000 : (cfg.handling ? cfg.handling.handbrakeBrakeForce : 8500);
             }
 
+            // --- FORZA REAL DUAL-CLUTCH & SEQUENTIAL SHIFT DYNAMICS ---
             if (car.gear !== 'R') {
                 const forwardSpeed = Math.max(0, car.vel.z);
                 const gearRatios = (cfg && cfg.isTorpilli) 
@@ -2119,27 +2483,53 @@
                 const maxGear = gearRatios.length;
                 const finalDrive = (cfg && cfg.isTorpilli) ? 3.20 : 3.65;
                 const wheelRadius = 0.34;
-                const maxRpm = (cfg && cfg.isTorpilli) ? 9800 : 8800;
+                const maxRpm = cfg.engine.rpmMax || ((cfg && cfg.isTorpilli) ? 9800 : 8800);
 
                 const gearIdx = Math.min(gearRatios.length, Math.max(1, typeof car.gear === 'number' ? car.gear : 1)) - 1;
-                let calculatedRpm = (forwardSpeed / wheelRadius) * gearRatios[gearIdx] * finalDrive * (60 / (2 * Math.PI));
-                calculatedRpm = Math.max(950, Math.min(maxRpm, calculatedRpm));
+                let targetRpm = (forwardSpeed / wheelRadius) * gearRatios[gearIdx] * finalDrive * (60 / (2 * Math.PI));
+                targetRpm = Math.max(950, Math.min(maxRpm, targetRpm));
 
-                if (calculatedRpm > (maxRpm - 900) && car.gear < maxGear) car.gear++;
-                else if (calculatedRpm < 2700 && car.gear > 1) car.gear--;
-                car.rpm = calculatedRpm;
+                // Upshift with realistic clutch cut & turbo blowoff
+                if (targetRpm > (maxRpm - 850) && car.gear < maxGear && car.shiftTimer <= 0) {
+                    car.gear++;
+                    car.shiftTimer = playerTuning.shiftSpeed;
+                    car.shiftKickTimer = 0.12;
+                    playSfx('blowoff'); // Turbo Blow-Off Hiss!
+                    // Exhaust backfire flame burst
+                    nitroFlames.forEach(f => {
+                        f.material.opacity = 1.0;
+                        f.scale.set(1.5, 1.5, 1.8);
+                    });
+                }
+                // Downshift with automatic heel-toe throttle blip
+                else if (targetRpm < 2700 && car.gear > 1 && car.shiftTimer <= 0) {
+                    car.gear--;
+                    car.shiftTimer = 0.05;
+                    car.rpm = Math.min(maxRpm, car.rpm + 1400); // rev-match blip
+                }
+
+                // Smooth RPM & Clutch simulation
+                if (car.shiftTimer > 0) {
+                    car.shiftTimer -= dt;
+                    // RPM drops suddenly during clutch disengagement
+                    car.rpm = THREE.MathUtils.lerp(car.rpm, targetRpm * 0.74, 0.35);
+                } else {
+                    car.rpm = THREE.MathUtils.lerp(car.rpm, targetRpm, 0.42);
+                }
             } else {
                 car.rpm = 1200 + (Math.abs(car.vel.z) / 14.0) * 4500;
             }
 
             if (engineOsc && audioCtx) {
-                const maxRpmRef = (cfg && cfg.isTorpilli) ? 9800 : 8800;
-                const targetFreq = 45 + (car.rpm / maxRpmRef) * 320;
-                engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.05);
-                engineGain.gain.setTargetAtTime((keys.w || (keys.s && car.gear === 'R')) ? 0.28 : 0.12, audioCtx.currentTime, 0.05);
+                const maxRpmRef = cfg.engine.rpmMax || ((cfg && cfg.isTorpilli) ? 9800 : 8800);
+                const pitchMult = cfg.engine.soundPitch || 1.0;
+                const targetFreq = (45 + (car.rpm / maxRpmRef) * 320) * pitchMult;
+                engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.04);
+                const isDriving = (keys.w || (keys.s && car.gear === 'R')) && car.shiftTimer <= 0;
+                engineGain.gain.setTargetAtTime(isDriving ? 0.28 : 0.12, audioCtx.currentTime, 0.05);
             }
 
-            // --- PACEJKA TIRE DYNAMICS & REAL DRIFT OVERSTEER ---
+            // --- PACEJKA TIRE DYNAMICS & REAL FORZA/NFS DRIFT OVERSTEER ---
             const mass = 1420;
             const vx = car.vel.x;
             const vz = Math.max(0.1, Math.abs(car.vel.z));
@@ -2150,19 +2540,26 @@
             const alphaFront = Math.atan2(vx + car.yawRate * 1.35, vz) - effSteer;
             const alphaRear  = Math.atan2(vx - car.yawRate * 1.45, vz);
 
-            let D_front = (cfg && cfg.isTorpilli) ? 14500 : (9400 * (cfg.accelVal || 1.0));
-            let D_rear  = (cfg && cfg.isTorpilli) ? 14500 : (9400 * (cfg.accelVal || 1.0));
+            const handling = cfg.handling;
+            let D_front = (cfg.isTorpilli ? 14500 : 9400) * handling.muFront * Math.min(2.0, (cfg.accelVal || 1.0) * 0.85);
+            let D_rear  = (cfg.isTorpilli ? 14500 : 9400) * handling.muRear  * Math.min(2.0, (cfg.accelVal || 1.0) * 0.85);
 
             if (keys.space) {
-                D_rear *= 0.22;
+                D_rear *= handling.driftSlipMult;
                 if (Math.abs(car.steerAngle) > 0.03 && Math.abs(car.vel.z) > 3.0) {
-                    const driftKick = car.steerAngle * (Math.abs(car.vel.z) / 18.0) * 12.5;
+                    const driftMultiplier = (handling.id === 'drift') ? 16.5 : (handling.id === 'grip' ? 8.5 : 12.5);
+                    const driftKick = car.steerAngle * (Math.abs(car.vel.z) / 18.0) * driftMultiplier;
                     car.yawRate += driftKick * dt;
                 }
                 if (Math.floor(Date.now() / 150) % 2 === 0) playSfx('skid');
+            } else if (handling.id === 'drift' && Math.abs(car.steerAngle) > 0.12 && Math.abs(car.vel.z) > 10.0) {
+                // Natural weight-transfer drift in PRO DRIFT mode
+                D_rear *= 0.52;
+                car.yawRate += car.steerAngle * (Math.abs(car.vel.z) / 22.0) * 4.8 * dt;
+                if (Math.floor(Date.now() / 200) % 2 === 0) playSfx('skid');
             }
 
-            const B = 8.5;
+            const B = (handling.id === 'grip') ? 10.5 : (handling.id === 'drift' ? 6.5 : 8.5);
             const C = 1.35;
             const FyFront = -D_front * Math.sin(C * Math.atan(B * alphaFront));
             const FyRear  = -D_rear  * Math.sin(C * Math.atan(B * alphaRear));
@@ -2188,7 +2585,7 @@
             car.yawRate += yawAccel * dt;
 
             if (!keys.space && Math.abs(car.steerAngle) < 0.04) {
-                car.yawRate *= Math.exp(-6.5 * dt);
+                car.yawRate *= Math.exp(-handling.yawDamping * dt);
             }
 
             if (!keys.w && !keys.s && Math.abs(car.vel.z) < 0.25) {
@@ -2911,18 +3308,34 @@
             const targetFov = 65 + Math.min(24, (Math.abs(car.speedKmh) / 500) * 18 + (car.isNitroBoosting ? 6 : 0));
             camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.08);
             camera.updateProjectionMatrix();
+
+            // Dynamic moon & road lighting follows player along infinite highway
+            if (currentGameState === GAME_STATE.PLAYING) {
+                moonLight.position.set(car.pos.x + 70, 160, car.pos.z - 40);
+                moonLight.target.position.set(car.pos.x, 0, car.pos.z);
+                roadFillLight.position.set(car.pos.x - 60, 90, car.pos.z + 60);
+                roadFillLight.target.position.set(car.pos.x, 0, car.pos.z);
+            }
         }
 
         // --- 11. HUD REFRESH LOOP ---
         function updateHUD() {
             if (currentGameState !== GAME_STATE.PLAYING) return;
 
-            const cfg = CAR_ROSTER[selectedCarIdx];
-            const maxRpmRef = (cfg && cfg.isTorpilli) ? 9800 : 8800;
+            const cfg = getEffectiveCarStats();
+            const maxRpmRef = cfg.engine.rpmMax || ((cfg && cfg.isTorpilli) ? 9800 : 8800);
 
             document.getElementById('speed-display').textContent = Math.round(Math.abs(car.speedKmh));
             document.getElementById('rpm-display').textContent = `${Math.round(car.rpm)} RPM`;
             document.getElementById('rpm-bar').style.width = `${(car.rpm / maxRpmRef) * 100}%`;
+
+            const tuningBadge = document.getElementById('hud-tuning-badge');
+            if (tuningBadge) {
+                const hMode = cfg.handling;
+                tuningBadge.textContent = hMode.id === 'grip' ? '🏁 TRACK' : (hMode.id === 'drift' ? '💨 DRIFT' : '⚖️ SIMCADE');
+                tuningBadge.style.color = hMode.id === 'grip' ? '#10b981' : (hMode.id === 'drift' ? '#ef4444' : '#38bdf8');
+                tuningBadge.style.borderColor = tuningBadge.style.color;
+            }
 
             const gearEl = document.getElementById('gear-display');
             gearEl.textContent = car.gear;
@@ -3035,11 +3448,12 @@
             spawnPoliceFleet(policeDirector.heatLevel || 1);
         };
 
-        window.startGamePursuit = function() {
+        function startGamePursuit() {
             startGamePursuitWithHeat(policeDirector.heatLevel || 1);
-        };
+        }
+        window.startGamePursuit = startGamePursuit;
 
-        window.startGamePursuitWithHeat = function(heat) {
+        function startGamePursuitWithHeat(heat) {
             initAudio();
             currentGameState = GAME_STATE.PLAYING;
             document.getElementById('main-menu-overlay').style.display = 'none';
@@ -3060,9 +3474,10 @@
             car.copsWrecked = 0;
 
             setInstantHeat(heat);
-        };
+        }
+        window.startGamePursuitWithHeat = startGamePursuitWithHeat;
 
-        window.returnToMainMenu = function() {
+        function returnToMainMenu() {
             currentGameState = GAME_STATE.MENU;
             const ov = document.getElementById('busted-overlay');
             if (ov) ov.style.display = 'none';
@@ -3074,7 +3489,8 @@
             policeDirector.activeCops.forEach(c => scene.remove(c.mesh.group));
             policeDirector.activeCops = [];
             if (policeDirector.empLaserMesh) policeDirector.empLaserMesh.visible = false;
-        };
+        }
+        window.returnToMainMenu = returnToMainMenu;
     </script>
 </body>
 </html>
